@@ -17,17 +17,27 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Index(DataTableAjaxPostModel model)
+        [HttpGet]
+        public IActionResult Index()
         {
-            var query = _context.TransferRequests
-                .Include(x => x.ApplicationUser)
-                .Include(x => x.Preferences)
-                .Where(x => x.DeletedAt == null);
-
-            var result = await _dataTableService.GetResultAsync(query, model);
-
-            return Json(result);
+            return View();
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> LoadData(DataTableAjaxPostModel model)
+        {
+            try
+            {
+                var query = _context.Users.Where(u => !u.IsDelete);
+                var result = await _dataTableService.GetResultAsync(query, model);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong: " + ex.Message);
+            }
+        }
+
     }
 }

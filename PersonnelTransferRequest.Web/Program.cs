@@ -18,6 +18,7 @@ builder.Services.AddControllersWithViews();
 
 // Registering the DataTable service
 builder.Services.AddScoped<IDataTableService, DataTableService>();
+builder.Services.AddHttpContextAccessor();
 
 
 var app = builder.Build();

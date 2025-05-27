@@ -1,4 +1,8 @@
-﻿<html lang="en"
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<html lang="en"
       class="light-style layout-menu-fixed"
       dir="ltr"
       data-theme="theme-default"
@@ -8,11 +12,12 @@
     <meta charset="utf-8" />
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(HttpContextAccessor.HttpContext).RequestToken" />
 
-    <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
 
-    <meta name="description" content="" />
+    <title>Dashboard - Admin</title>
 
+   
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="~/adminAssets/img/favicon/favicon.ico" />
 
@@ -46,7 +51,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.min.css">
 
     <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 </head>
 
 <body>
@@ -79,7 +84,7 @@
                     </li>
                     <!-- Persons -->
                     <li class="menu-item">
-                        <a href="/Admin/ApplicationUser/Index" class="menu-link">
+                        <a href="/admin/applicationUser/index" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-user-plus"></i>
                             <div data-i18n="Basic">Tüm Personeller</div>
                         </a>
@@ -193,43 +198,9 @@
     <!--sweetalert2-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.all.min.js"></script>
 
-    
-    <!-- DataTables JS -->
+    <!--dataTables-->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    <!--Data table for all table-->
-    <script>
-        $(document).ready(function () {
-            $('.table').DataTable({
-
-                language: {
-                    "sEmptyTable": "Tabloda herhangi bir veri mevcut değil",
-                    "sInfo": "Toplam _TOTAL_ kayıttan _START_ - _END_ arası gösteriliyor",
-                    "sInfoEmpty": "Kayıt yok",
-                    "sInfoFiltered": "(_MAX_ kayıt içerisinden bulunan)",
-                    "sInfoPostFix": "",
-                    "sInfoThousands": ",",
-                    "sLengthMenu": "Sayfada _MENU_ kayıt göster",
-                    "sLoadingRecords": "Yükleniyor...",
-                    "sProcessing": "İşleniyor...",
-                    "sSearch": "Ara:",
-                    "sZeroRecords": "Eşleşen kayıt bulunamadı",
-                    "oPaginate": {
-                        "sFirst": "İlk",
-                        "sLast": "Son",
-                        "sNext": "Sonraki",
-                        "sPrevious": "Önceki"
-                    },
-                    "oAria": {
-                        "sSortAscending": ": artan sütun sıralamasını aktifleştir",
-                        "sSortDescending": ": azalan sütun sıralamasını aktifleştir"
-                    }
-                },
-                pageLength: 10
-            });
-        });
-
-    </script>
 
     <!--Delete Function-->
     <script>
@@ -320,6 +291,6 @@
         }
 
     </script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

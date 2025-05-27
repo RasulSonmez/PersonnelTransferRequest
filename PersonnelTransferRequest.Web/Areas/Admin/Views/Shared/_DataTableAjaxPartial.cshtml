@@ -1,0 +1,67 @@
+﻿@model string
+
+<script src="~/adminAssets/vendor/libs/jquery/jquery.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var token = $('meta[name="csrf-token"]').attr('content');
+
+        // Data-columns JSON parse et
+        var columns = JSON.parse($('#@Model').attr('data-columns'));
+
+        // İşlem sütunu (son kolon) için render fonksiyonu ekle
+        columns[columns.length - 1] = {
+            data: null,
+            orderable: false,
+            searchable: false,
+            render: function (data, type, row) {
+                return `
+                    <div class="d-flex align-items-center">
+                        <a href="/Admin/ApplicationUser/Details/${row.id}" 
+                           data-bs-toggle="tooltip" data-bs-placement="top" title="Detay" 
+                           class="nav-link p-1">
+                           <i class="bx bx-info-circle"></i>
+                        </a>
+                        <a href="/Admin/ApplicationUser/Edit/${row.id}" 
+                           data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle" 
+                           class="nav-link p-1">
+                           <i class="bx bx-edit"></i>
+                        </a>
+                        <a href="javascript:void(0);" 
+                           data-bs-toggle="tooltip" data-bs-placement="top" title="Sil" 
+                           class="nav-link p-1 cursor-pointer" 
+                           onclick="confirmDelete('${row.id}', '/Admin/Product/Delete/')">
+                           <i class="bx bx-trash"></i>
+                        </a>
+                    </div>
+                `;
+            }
+        };
+
+        // DataTable başlat
+        $('#@Model').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: $('#@Model').data('url'),
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                }
+            },
+            columns: columns,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+            },
+            drawCallback: function() {
+                // Tooltipleri yeniden başlat
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                });
+            }
+        });
+    });
+</script>

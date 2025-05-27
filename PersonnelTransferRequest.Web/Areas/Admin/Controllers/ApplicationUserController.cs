@@ -19,16 +19,21 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         }
 
         //Action method to list all users
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        //Action method to load user data for DataTable
         [HttpPost]
-        public async Task<IActionResult> Index([FromBody] DataTableAjaxPostModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetAllUserForDataTable(DataTableAjaxPostModel model)
         {
             try
             {
-                var query = _context.Users
-                    .Where(u => !u.IsDelete);
-
+                var query = _context.Users.Where(u => !u.IsDelete);
                 var result = await _dataTableService.GetResultAsync(query, model);
-
                 return Json(result);
             }
             catch (Exception ex)
@@ -36,7 +41,6 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 return StatusCode(500, "Something went wrong: " + ex.Message);
             }
         }
-
         //Action method to show user details
         public async Task<IActionResult> Details(string id)
         {
