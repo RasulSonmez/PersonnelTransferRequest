@@ -2,19 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
+using PersonnelTransferRequest.Web.Services.DataTable;
 
 namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class DashboardController : Controller
+    public class DashboardController : AdminBaseController
     {
-        private readonly ApplicationDbContext _context;
-     
-        public DashboardController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public DashboardController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IDataTableService dataTableService)
+           : base(context, userManager, dataTableService)
         {
-            _context = context;
-          
         }
+
         public IActionResult Index()
         {
             return View();

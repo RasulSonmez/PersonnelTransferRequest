@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Kullanıcılar";
+}
+
+<h2>Kullanıcılar</h2>
+
+<table id="usersTable" class="display table table-bordered table-hover" style="width:100%">
+    <thead>
+        <tr>
+            <th>Kullanıcı Adı</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Oluşturulma</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#usersTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '@Url.Action("Index", "ApplicationUser")',
+                    type: 'POST'
+                },
+                columns: [
+                    { data: 'userName' },
+                    { data: 'email' },
+                    { data: 'phoneNumber' },
+                    {
+                        data: 'createdAt',
+                        render: function (data) {
+                            let date = new Date(data);
+                            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+                }
+            });
+        });
+    </script>
+}

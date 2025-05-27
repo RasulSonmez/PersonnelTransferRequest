@@ -4,5 +4,137 @@
     Layout = "~/Areas/Admin/Views/_Layout.cshtml";
 }
 
-<h1>    Admin Index</h1>
 
+
+<div class="row row-cols-2 row-cols-lg-3 justify-content-center mb-3">
+    <!--item 1-->
+    <div class="col">
+        <a href="#">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="avatar avatar-initial me-2">
+                            <span class="avatar-initial bg-label-success rounded-2">  <i class="bx bx-user-plus bx-sm"></i></span>
+                        </div>
+                    </div>
+                    <span class="fw-semibold d-block mb-1 text-dark">Tüm personeller</span>
+                    <h3 class="card-title mb-2">210.000</h3>
+                    <div class="d-flex justify-content-end">
+                        <span class="text-success fst-normal">Detay</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!--item 2-->
+    <div class="col">
+        <a href="#">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="avatar avatar-initial me-2">
+                            <span class="avatar-initial bg-label-warning rounded-2">  <i class="bx bx-building-house bx-sm"></i></span>
+                        </div>
+                    </div>
+                    <span class="fw-semibold d-block mb-1 text-dark">Tayin Başvuruları</span>
+                    <h3 class="card-title mb-2">28</h3>
+                    <div class="d-flex justify-content-end">
+                        <span class="text-success fst-normal">Detay</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!--item 3-->
+    <div class="col">
+        <a href="#">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="avatar avatar-initial me-2">
+                            <span class="avatar-initial bg-label-danger rounded-2">  <i class="bx bx-grid bx-sm"></i></span>
+                        </div>
+                    </div>
+                    <span class="fw-semibold d-block mb-1 text-dark">Unvan Yönetimi</span>
+                    <h3 class="card-title mb-2">4</h3>
+                    <div class="d-flex justify-content-end">
+                        <span class="text-success fst-normal">Detay</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-header fw-bolder">Son Tayin Başvuruları</h5>
+                <div class="table-responsive text-nowrap">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fotoğraf</th>
+                                <th>İsim Soyisim</th>
+                                <th>Unvan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+                            <tr>
+                                <td>
+                                    <img src="/adminAssets/img/avatars/1.png" height="60" alt="Alternate Text" />
+                                </td>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>Uğur Yılmaz</strong></td>
+
+                                <td><span class="badge bg-label-primary me-1">Yazı İşleri Müdürü</span></td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-success"><i class="bx bx-info-circle"></i> Detay</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="/adminAssets/img/avatars/5.png" height="60" alt="Alternate Text" />
+                                </td>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>Uğur Yılmaz</strong></td>
+
+                                <td><span class="badge bg-label-primary me-1">Yazı İşleri Müdürü</span></td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-success"><i class="bx bx-info-circle"></i> Detay</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="/adminAssets/img/avatars/6.png" height="60" alt="Alternate Text" />
+                                </td>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>Uğur Yılmaz</strong></td>
+
+                                <td><span class="badge bg-label-primary me-1">Yazı İşleri Müdürü</span></td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-success"><i class="bx bx-info-circle"></i> Detay</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="/adminAssets/img/avatars/7.png" height="60" alt="Alternate Text" />
+                                </td>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>Uğur Yılmaz</strong></td>
+
+                                <td><span class="badge bg-label-primary me-1">Yazı İşleri Müdürü</span></td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-success"><i class="bx bx-info-circle"></i> Detay</a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

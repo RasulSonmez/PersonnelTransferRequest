@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
+using PersonnelTransferRequest.Web.Services.DataTable;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+// Registering the DataTable service
+builder.Services.AddScoped<IDataTableService, DataTableService>();
+
 
 var app = builder.Build();
 

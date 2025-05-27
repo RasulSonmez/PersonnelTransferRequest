@@ -1,0 +1,59 @@
+﻿@model ApplicationUser
+@{
+    ViewData["Title"] = "Personel Detayı";
+    Layout = "~/Areas/Admin/Views/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-header">@ViewBag["Title"]</h5>
+                <div class="d-flex justify-content-center">
+                    @if (!string.IsNullOrEmpty(Model.ProfilPhotoPath))
+                    {
+                        <img src="@Model.ProfilPhotoPath" alt="@Model.Name @Model.Surname" class="profile-photo" />
+                    }
+                    else
+                    {
+                        <img src="~/adminAssets/img/illustrations/girl-doing-yoga-light.png" alt="Varsayılan Profil Fotoğrafı" class="profile-photo" />
+                    }
+                </div>
+                <div class="info-container">
+                    <ul class="list-unstyled mb-6">
+
+                        <li class="mb-2">
+                            <span class="h6">Email:</span>
+                            <span>@Model.Email</span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="h6">Sicil:</span>
+                            <span>@Model.RegistrationNumber</span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="h6">Unvan:</span>
+                            <span>@Model.Title</span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="h6">İsim Soyisim:</span>
+                            <span>@Model.Name - @Model.Surname</span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="h6">TCKN:</span>
+                            <span>@Model.TCKN</span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="h6">Telefon Numarası:</span>
+                            <span>@Model.PhoneNumber</span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="h6">Görev Yeri:</span>
+                            <span>@Model.DutyStation</span>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
