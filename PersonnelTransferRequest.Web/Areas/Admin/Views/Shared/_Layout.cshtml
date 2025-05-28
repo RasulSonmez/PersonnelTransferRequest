@@ -107,7 +107,7 @@
                     </li>
                     <!-- Change Password -->
                     <li class="menu-item">
-                        <a href="/sifre-degistirme" class="menu-link">
+                        <a href="/admin/applicationUser/adminChangePassword" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-key"></i>
                             <div data-i18n="Boxicons">Şifre Değiştirme</div>
                         </a>
@@ -144,9 +144,45 @@
                     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                         <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
                             <i class="bx bx-menu bx-sm"></i>
+
                         </a>
                     </div>
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
+
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="dropdown">
+
+                                    <div class="avatar avatar-online">
+                                        <i class="bx bx-user bx-md"></i>
+                                    </div>
+                                    <small class="fw-bolder">
+                                        @{
+                                            var userName = @User?.Identity?.Name;
+
+                                            if (userName != null)
+                                            {
+                                                var userNameParts = userName.Split('@');
+                                                if (userNameParts.Length > 1)
+                                                {
+                                                    userName = userNameParts[0] + "@...";
+                                                }
+                                            }
+                                        }
+
+                                        @userName
+
+
+                                    </small>
+                                </a>
+
+                            </li>
+                            <!--/ User -->
+                        </ul>
+                    </div>
 
                 </nav>
 

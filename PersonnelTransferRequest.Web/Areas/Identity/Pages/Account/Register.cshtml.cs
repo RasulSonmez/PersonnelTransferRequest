@@ -79,12 +79,12 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+           
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Şifre alanı zorunludur.")]
             [StringLength(100, ErrorMessage = "Şifre en az {2}, en fazla {1} karakter olmalı.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Şifre")]
@@ -135,6 +135,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
             
             ReturnUrl = returnUrl;
 
+            //get titles from db
             var titles = await _context.Titles
       .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
       .OrderByDescending(t => t.CreatedAt)
@@ -160,31 +161,48 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                var existingTCKN = await _context.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.TCKN == Input.TCKN);
 
-                // Registration Number will be used as Username
-                await _userStore.SetUserNameAsync(user, Input.RegistrationNumber, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                user.Title = Input.Title;
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                if (existingTCKN != null)
                 {
-                    _logger.LogInformation("Yeni kullanıcı başarıyla oluşturuldu.");
-
-                    // If you do not want to log in automatically, you can remove this line:
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    //Instead of sending emails, only forwarding is done
-                    TempData["SuccessMessage"] = "Kullanıcı başarıyla oluşturuldu.";
-                    return LocalRedirect(returnUrl);
+                    ModelState.AddModelError("Input.TCKN", "TCKN doğru olduğuna emin olunuz.");
                 }
-
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    var user = CreateUser();
+
+                    await _userStore.SetUserNameAsync(user, Input.RegistrationNumber, CancellationToken.None);
+                    await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                    user.Title = Input.Title;
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("Yeni kullanıcı başarıyla oluşturuldu.");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        TempData["SuccessMessage"] = "Kullanıcı başarıyla oluşturuldu.";
+                        return LocalRedirect(returnUrl);
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-            }           
+            }
+
+            // ✅ Her hata durumunda tekrar yüklenir
+            var titles = await _context.Titles
+                .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                .OrderByDescending(t => t.CreatedAt)
+                .ToListAsync();
+
+            ViewData["Titles"] = titles.Any()
+                ? new SelectList(titles, "TitleName", "TitleName")
+                : new SelectList(Enumerable.Empty<SelectListItem>());
+
             return Page();
         }
 

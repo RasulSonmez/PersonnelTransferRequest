@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PersonnelTransferRequest.Common.Extensions;
 using PersonnelTransferRequest.Entities.Models;
+using PersonnelTransferRequest.Web.Areas.Admin.ViewModel;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Services.DataTable;
 using PersonnelTransferRequest.Web.ViewModels.DataTable;
@@ -15,8 +16,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
     {
      
 
-       public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IDataTableService dataTableService)
-        :  base(context, userManager, dataTableService)
+       public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IDataTableService dataTableService, SignInManager<ApplicationUser> signInManager)
+        :  base(context, userManager, dataTableService, signInManager)
         {
         }
 
@@ -264,5 +265,48 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             }
 
         }
+
+
+        //Action method to change user password
+        [HttpGet]
+        public async Task<IActionResult> AdminChangePassword()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            return View(new ChangePasswordViewModel { UserId = user.Id });
+        }
+
+        //Action method to handle password change form submission
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdminChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
+                return NotFound();
+
+            var changePassResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (!changePassResult.Succeeded)
+            {
+                foreach (var error in changePassResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View(model);
+            }
+
+            await _signInManager.SignOutAsync();
+            TempData["SuccessMessage"] = "Şifreniz başarıyla değiştirildi.";
+            return RedirectToAction("Login", "Account", new { area = "Identity" });
+
+        }
+
     }
 }
+

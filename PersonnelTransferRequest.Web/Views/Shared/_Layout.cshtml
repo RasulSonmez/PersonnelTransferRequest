@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PersonnelTransferRequest.Web.styles.css" asp-append-version="true" />
+
+    <!--sweetalert2 Css-->
+    <link href="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -38,6 +41,59 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!--sweetalert2-->
+    <script src="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.min.js"></script>
+
+    <!--For success and error message-->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: "success",
+        title: '@Html.Raw(TempData["SuccessMessage"])',
+    });
+        </script>
+
+        TempData.Remove("SuccessMessage");
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: "error",
+        title: '@Html.Raw(TempData["ErrorMessage"])',
+    });
+        </script>
+
+        TempData.Remove("ErrorMessage");
+    }
+
+    <!--For success and error message-->
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
