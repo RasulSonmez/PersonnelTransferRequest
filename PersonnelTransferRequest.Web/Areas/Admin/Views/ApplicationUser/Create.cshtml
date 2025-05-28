@@ -1,0 +1,109 @@
+﻿@model ApplicationUser
+@{
+    ViewData["Title"] = "Personel Ekle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="fw-bolder">@ViewData["Title"]</h2>
+
+
+@* Display identity and model-level errors *@
+@if (!ViewData.ModelState.IsValid)
+{
+    var allErrors = ViewData.ModelState[string.Empty]?.Errors;
+    if (allErrors != null && allErrors.Count > 0)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in allErrors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+}
+
+<div class="card">
+    <div class="card-body">
+     
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="row row-cols-1 row-cols-lg-2">
+                <div class="col">
+                    <div class="form-group mb-3">
+                        <label asp-for="RegistrationNumber" class="fw-bolder mb-2"></label>
+                        <input asp-for="RegistrationNumber" class="form-control" />
+                        <span asp-validation-for="RegistrationNumber" class="text-danger fs-tiny"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Name"  class="fw-bolder mb-2"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger fs-tiny"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Surname"  class="fw-bolder mb-2"></label>
+                        <input asp-for="Surname" class="form-control" />
+                        <span asp-validation-for="Surname" class="text-danger fs-tiny"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Title"  class="fw-bolder mb-2"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger fs-tiny"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="TCKN"  class="fw-bolder mb-2"></label>
+                        <input asp-for="TCKN" class="form-control" inputmode="numeric" pattern="[0-9]*"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                        <span asp-validation-for="TCKN" class="text-danger fs-tiny"></span>
+                    </div>
+                    
+                </div>
+
+                <div class="col">
+
+                    <div class="form-group mb-3">
+                        <label asp-for="GSM" class="fw-bolder mb-2"></label>
+                        <input asp-for="GSM" class="form-control" inputmode="numeric" pattern="[0-9]*"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                        <span asp-validation-for="GSM" class="text-danger fs-tiny"></span>
+                    </div>
+
+                   
+
+                    <div class="form-group mb-3">
+                        <label asp-for="DutyStation" class="fw-bolder mb-2"></label>
+                        <input asp-for="DutyStation" class="form-control" />
+                        <span asp-validation-for="DutyStation" class="text-danger fs-tiny"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="ProfilPhotoFile" class="fw-bolder mb-2">Profile Fotoğrafı</label>
+                        <input asp-for="ProfilPhotoFile" type="file" class="form-control" />
+                        <span asp-validation-for="ProfilPhotoFile" class="text-danger fs-tiny"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="fw-bolder mb-2">Şifre</label>
+                        <input name="password" type="password" class="form-control" required />
+                       
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-success">Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">Vazgeç</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

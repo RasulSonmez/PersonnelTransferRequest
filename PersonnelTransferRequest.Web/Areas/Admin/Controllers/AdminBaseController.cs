@@ -7,7 +7,7 @@ using PersonnelTransferRequest.Web.Services.DataTable;
 namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 {
     //TODO:: put "Admin" role 
-
+    [Area("Admin")]
     public class AdminBaseController : Controller
     {
         protected readonly ApplicationDbContext _context;

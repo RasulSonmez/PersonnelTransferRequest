@@ -37,18 +37,19 @@ namespace PersonnelTransferRequest.Entities.Models
         [Display(Name = "Soyisim")]
         public string Surname { get; set; }
 
+        [Required(ErrorMessage = "Zorunlu alan")]
         [RegularExpression(@"^[0-9]{11}$", ErrorMessage = "Hatalı TC Kimlik No formatı!")]
         [Display(Name = "TC Kimlik No")]
+    
         public string? TCKN { get; set; }
 
         [Required(ErrorMessage = "Zorunlu alan")]
-        [MinLength(10, ErrorMessage = "Telefon Numarası en az 10 karakter olmalıdır.")]
-        [MaxLength(15, ErrorMessage = "Telefon Numarası en fazla 15 karakter olmalıdır.")]
+        [RegularExpression(@"^\d{10,15}$", ErrorMessage = "Only digits allowed. Must be between 10-15 digits.")]
         [Display(Name = "Telefon Numarası")]
         public string GSM { get; set; }
 
 
-        [Required(ErrorMessage = "Görev yeri zorunlu alandır.")]     
+        [Required(ErrorMessage = "Zorunlu alan")]
         [Display(Name = "Görev Yeri")]
         public string DutyStation { get; set; }
 

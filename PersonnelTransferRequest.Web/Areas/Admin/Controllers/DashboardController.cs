@@ -6,7 +6,7 @@ using PersonnelTransferRequest.Web.Services.DataTable;
 
 namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+ 
     public class DashboardController : AdminBaseController
     {
         public DashboardController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IDataTableService dataTableService)

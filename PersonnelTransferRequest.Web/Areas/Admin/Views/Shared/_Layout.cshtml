@@ -17,7 +17,7 @@
 
     <title>Dashboard - Admin</title>
 
-   
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="~/adminAssets/img/favicon/favicon.ico" />
 
@@ -47,9 +47,9 @@
 
     <script src="~/adminAssets/js/config.js"></script>
 
-    <!--sweetalert2 Css-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.min.css">
-
+    <!--sweetalert2 Css-->   
+    <link href="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.css" rel="stylesheet" />
+   
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 </head>
@@ -89,6 +89,7 @@
                             <div data-i18n="Basic">Tüm Personeller</div>
                         </a>
                     </li>
+
                     <!-- Transfer Persons  -->
                     <li class="menu-item">
                         <a href="cards-basic.html" class="menu-link">
@@ -99,7 +100,7 @@
 
                     <!-- Title Management -->
                     <li class="menu-item">
-                        <a href="cards-basic.html" class="menu-link">
+                        <a href="/admin/title/index" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-grid"></i>
                             <div data-i18n="Basic">Unvan Yönetimi</div>
                         </a>
@@ -196,8 +197,7 @@
     <script src="~/adminAssets/js/dashboards-analytics.js"></script>
 
     <!--sweetalert2-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.all.min.js"></script>
-
+    <script src="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.min.js"></script>
     <!--dataTables-->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -207,8 +207,8 @@
 
         function confirmDelete(itemId, url) {
             Swal.fire({
-                title: "Are You Sure You Want to Delete?",
-                text: "Once deleted you won't be able to get it back!",
+                title: "Silmek istediğinize emin misiniz?",
+                text: "Bir kez silinince geri alınamayacak!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#435ebe",
@@ -237,7 +237,7 @@
                                 });
                                 Toast.fire({
                                     icon: "success",
-                                    title: "Deleting",
+                                    title: "Siliniyor",
                                     text: response.message
                                 }).then((value) => {
                                     window.location.reload();
@@ -278,7 +278,7 @@
                             });
                             Toast.fire({
                                 icon: "error",
-                                title: "Something went wrong"
+                                title: "Birşeyler ters gitti"
                             }).then((value) => {
                                 //window.location.reload();
                             });
@@ -291,6 +291,56 @@
         }
 
     </script>
+
+    <!--For success and error message-->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+      const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+          }
+      });
+      Toast.fire({
+          icon: "success",
+          title: '@Html.Raw(TempData["SuccessMessage"])',
+      });
+        </script>
+
+        TempData.Remove("SuccessMessage");
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+      const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+          }
+      });
+      Toast.fire({
+          icon: "error",
+          title: '@Html.Raw(TempData["ErrorMessage"])',
+      });
+        </script>
+
+        TempData.Remove("ErrorMessage");
+    }
+
+    <!--For success and error message-->
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

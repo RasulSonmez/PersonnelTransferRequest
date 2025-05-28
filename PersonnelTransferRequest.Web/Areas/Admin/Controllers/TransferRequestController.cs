@@ -8,7 +8,7 @@ using PersonnelTransferRequest.Web.ViewModels.DataTable;
 
 namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+ 
     public class TransferRequestController : AdminBaseController
     {
 
@@ -17,27 +17,9 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
         }
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
+      
 
-
-        [HttpPost]
-        public async Task<IActionResult> LoadData(DataTableAjaxPostModel model)
-        {
-            try
-            {
-                var query = _context.Users.Where(u => !u.IsDelete);
-                var result = await _dataTableService.GetResultAsync(query, model);
-                return Json(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Something went wrong: " + ex.Message);
-            }
-        }
+       
 
     }
 }

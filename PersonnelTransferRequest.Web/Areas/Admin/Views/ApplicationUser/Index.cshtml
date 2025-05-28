@@ -6,9 +6,17 @@
 
 @Html.AntiForgeryToken()
 
+<h2 class="card-header">@ViewData["Title"]</h2>
+
+
 <div class="card">
-    <h5 class="card-header">@ViewData["Title"]</h5>
+
+
     <div class="card-body">
+        <div class="mb-4">
+            <a asp-action="Create" class="btn btn-primary text-white">Personel Ekle</a>
+
+        </div>
         <div class="table-responsive text-nowrap">
             <table id="usersTable"
                    class="table table-striped"
@@ -16,16 +24,15 @@
                    data-columns='[
                        { "data": "userName" },
                        { "data": "email" },
-                       { "data": "phoneNumber" },
-                       { "data": "registrationNumber" },  
-                   { "data": null }
+                       { "data": "gsm" },
+                       { "data": "registrationNumber" }
                    ]' style="width:100%">
                 <thead>
                     <tr>
                         <th>Kullanıcı Adı</th>
                         <th>Email</th>
                         <th>Telefon</th>
-                        <th>RegistrationNumber</th>
+                        <th>Sicil No</th>
                     </tr>
                 </thead>
 

@@ -1,0 +1,51 @@
+﻿@model Title
+@{
+    ViewData["Title"] = ";Unvan Düzenle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="fw-bolder">@ViewData["Title"]</h2>
+
+@* Returne Errors *@
+@if (!ViewData.ModelState.IsValid)
+{
+    var allErrors = ViewData.ModelState[string.Empty]?.Errors;
+    if (allErrors != null && allErrors.Count > 0)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in allErrors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+}
+
+<div class="card">
+    <div class="card-body">
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div class="row row-cols-1 row-cols-lg-2">
+                <div class="col">
+                    <div class="form-group mb-3">
+                        <label asp-for="TitleName" class="fw-bolder mb-2"></label>
+                        <input asp-for="TitleName" class="form-control" />
+                        <span asp-validation-for="TitleName" class="text-danger fs-tiny"></span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-success">Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">Vazgeç</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
