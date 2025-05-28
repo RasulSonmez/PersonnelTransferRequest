@@ -21,6 +21,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             var titles = await _context.Titles
                 .Where(t => t.DeletedAt == null)
+                .OrderByDescending(t=> t.CreatedAt)
                 .ToListAsync();
             return View(titles);
         }
@@ -51,6 +52,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     return View(model);
                 }
 
+                //remove leading and trailing spaces
                 model.TitleName = model.TitleName.Trim();
                 await _context.Titles.AddAsync(model);
                 await _context.SaveChangesAsync();
@@ -75,7 +77,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 return NotFound();
 
             var title = await _context.Titles.FindAsync(id);
-            if (title == null || title.DeletedAt == null)
+            if (title == null || title.DeletedAt != null)
                 return NotFound();
 
             return View(title);
@@ -95,12 +97,12 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     return View(model);
 
                 var existingTitle = await _context.Titles.FindAsync(id);
-                if (existingTitle == null || existingTitle.DeletedAt == null)
+                if (existingTitle == null || existingTitle.DeletedAt != null)
                     return NotFound();
 
                 // Duplicate check (except self)
                 bool duplicate = await _context.Titles
-                    .AnyAsync(t => t.TitleName.ToLower() == model.TitleName.ToLower() && t.Id != id && t.DeletedAt == null);
+                    .AnyAsync(t => t.TitleName.ToLower() == model.TitleName.ToLower() && t.Id != id && t.DeletedAt != null);
 
                 if (duplicate)
                 {
@@ -108,6 +110,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     return View(model);
                 }
 
+                //remove leading and trailing spaces
                 existingTitle.TitleName = model.TitleName.Trim();
                 existingTitle.ModifiedAt = DateTime.Now;
 

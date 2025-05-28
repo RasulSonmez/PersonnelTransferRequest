@@ -89,6 +89,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     model.ProfilPhotoPath = uploadedPath;
                 }
 
+                //remove leading and trailing spaces
                 model.UserName = model.RegistrationNumber?.Trim();
                 model.Email = $"{model.RegistrationNumber}@adalet.com"; // Adjust this if needed
 
@@ -175,7 +176,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     user.ProfilPhotoPath = uploadedPath;
                 }
 
-              
+                //remove leading and trailing spaces
                 user.RegistrationNumber = model.RegistrationNumber?.Trim();
                 user.Title = model.Title;
                 user.Name = model.Name;
