@@ -8,9 +8,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PersonnelTransferRequest.Entities.Models;
+using PersonnelTransferRequest.Web.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,6 +27,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+        private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
@@ -36,6 +40,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
+            ApplicationDbContext context,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -44,6 +49,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -69,41 +75,81 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
+
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Şifre en az {2}, en fazla {1} karakter olmalı.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Şifre")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Şifre (Tekrar)")]
+            [Compare("Password", ErrorMessage = "Şifreler uyuşmuyor.")]
             public string ConfirmPassword { get; set; }
+
+            [Required(ErrorMessage = "Zorunlu alan")]
+            [Display(Name = "Sicil")]
+            [MinLength(1), MaxLength(10)]
+            public string RegistrationNumber { get; set; }
+
+            [Required(ErrorMessage = "Zorunlu alan")]
+            [Display(Name = "Unvan")]
+            public string Title { get; set; }
+
+            [Required(ErrorMessage = "Zorunlu alan")]
+            [MinLength(3), MaxLength(128)]
+            [Display(Name = "İsim")]
+            public string Name { get; set; }
+
+            [Required(ErrorMessage = "Zorunlu alan")]
+            [MinLength(3), MaxLength(200)]
+            [Display(Name = "Soyisim")]
+            public string Surname { get; set; }
+
+            [Required(ErrorMessage = "Zorunlu alan")]
+            [RegularExpression(@"^[0-9]{11}$", ErrorMessage = "Hatalı TC Kimlik No formatı!")]
+            [Display(Name = "TC Kimlik No")]
+            public string TCKN { get; set; }
+
+            [Required(ErrorMessage = "Zorunlu alan")]
+            [RegularExpression(@"^\d{10,15}$", ErrorMessage = "Sadece rakam girin. 10-15 haneli olmalı.")]
+            [Display(Name = "Telefon Numarası")]
+            public string GSM { get; set; }
+
+            [Required(ErrorMessage = "Zorunlu alan")]
+            [Display(Name = "Görev Yeri")]
+            public string DutyStation { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            
             ReturnUrl = returnUrl;
+
+            var titles = await _context.Titles
+      .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+      .OrderByDescending(t => t.CreatedAt)
+      .ToListAsync();
+            
+            //null control
+            if (titles != null && titles.Any())
+            {
+                ViewData["Titles"] = new SelectList(titles, "TitleName", "TitleName");
+            }
+            else
+            {
+                ViewData["Titles"] = new SelectList(Enumerable.Empty<SelectListItem>());
+            }
+
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -111,47 +157,34 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                // Registration Number will be used as Username
+                await _userStore.SetUserNameAsync(user, Input.RegistrationNumber, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.Title = Input.Title;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Yeni kullanıcı başarıyla oluşturuldu.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    // If you do not want to log in automatically, you can remove this line:
+                    await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    //Instead of sending emails, only forwarding is done
+                    TempData["SuccessMessage"] = "Kullanıcı başarıyla oluşturuldu.";
+                    return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
-
-            // If we got this far, something failed, redisplay form
+            }           
             return Page();
         }
 
@@ -159,13 +192,25 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<ApplicationUser>();
+                return new ApplicationUser
+                {
+                    EmailConfirmed = true,
+                    RegistrationNumber = Input.RegistrationNumber,
+                    Title = Input.Title,
+                    Name = Input.Name,
+                    Surname = Input.Surname,
+                    TCKN = Input.TCKN,
+                    GSM = Input.GSM,
+                    DutyStation = Input.DutyStation,
+                    UserName = Input.RegistrationNumber, 
+                    Email = Input.Email,
+                    IsDelete = false
+                    
+                };
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                throw new InvalidOperationException($"'{nameof(ApplicationUser)}' örneği oluşturulamadı.");
             }
         }
 
