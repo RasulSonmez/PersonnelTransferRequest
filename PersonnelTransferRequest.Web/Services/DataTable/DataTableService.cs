@@ -16,8 +16,10 @@ namespace PersonnelTransferRequest.Web.Services.DataTable
             // Search
             if (!string.IsNullOrEmpty(model.search?.value))
             {
-                var searchValue = model.search.value.ToLower();
-                // Custom filtre yazılabilir
+                var searchValue = model.search.value;
+                var searchableColumns = new[] { "Name", "Surname", "RegistrationNumber", "UserName" };
+
+                query = query.WhereDynamicOrContains(searchableColumns, searchValue);
             }
 
             result.recordsFiltered = await Task.FromResult(query.Count());

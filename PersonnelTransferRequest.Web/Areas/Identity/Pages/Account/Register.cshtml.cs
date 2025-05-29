@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PersonnelTransferRequest.Common.Extensions;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
 using System;
@@ -79,7 +80,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-           
+
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -127,29 +128,23 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "Zorunlu alan")]
             [Display(Name = "Görev Yeri")]
             public string DutyStation { get; set; }
+
+            [Display(Name = "Fotoğraf")]
+            [DataType(DataType.Upload)]
+            [MaxFileSize(5 * 1024 * 1024)] // 5 MB sınır
+            [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".svg" })]
+            public IFormFile? ProfilPhotoFile { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            
+
             ReturnUrl = returnUrl;
 
-            //get titles from db
-            var titles = await _context.Titles
+            ViewData["Titles"] = new SelectList(_context.Titles
       .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
-      .OrderByDescending(t => t.CreatedAt)
-      .ToListAsync();
-            
-            //null control
-            if (titles != null && titles.Any())
-            {
-                ViewData["Titles"] = new SelectList(titles, "TitleName", "TitleName");
-            }
-            else
-            {
-                ViewData["Titles"] = new SelectList(Enumerable.Empty<SelectListItem>());
-            }
+      .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -193,15 +188,10 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
                 }
             }
 
-            // ✅ Her hata durumunda tekrar yüklenir
-            var titles = await _context.Titles
-                .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
-                .OrderByDescending(t => t.CreatedAt)
-                .ToListAsync();
+            ViewData["Titles"] = new SelectList(_context.Titles
+     .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+     .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName", Input.Title);
 
-            ViewData["Titles"] = titles.Any()
-                ? new SelectList(titles, "TitleName", "TitleName")
-                : new SelectList(Enumerable.Empty<SelectListItem>());
 
             return Page();
         }
@@ -210,7 +200,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
         {
             try
             {
-                return new ApplicationUser
+                var user = new ApplicationUser
                 {
                     EmailConfirmed = true,
                     RegistrationNumber = Input.RegistrationNumber,
@@ -220,11 +210,24 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
                     TCKN = Input.TCKN,
                     GSM = Input.GSM,
                     DutyStation = Input.DutyStation,
-                    UserName = Input.RegistrationNumber, 
+                    UserName = Input.RegistrationNumber,
                     Email = Input.Email,
                     IsDelete = false
-                    
                 };
+
+
+                // Upload profile image using custom extension
+                if (Input.ProfilPhotoFile != null)
+                {
+                    var uploadedPath = UploadImageExtension.UploadProfileImage(Input.ProfilPhotoFile);
+
+                    if (!string.IsNullOrEmpty(uploadedPath))
+                    {
+                        user.ProfilPhotoPath = uploadedPath;
+                    }
+                }
+
+                return user;
             }
             catch
             {

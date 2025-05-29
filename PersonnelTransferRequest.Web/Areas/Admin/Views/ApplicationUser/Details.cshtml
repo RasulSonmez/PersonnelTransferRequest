@@ -5,57 +5,60 @@
 }
 
 <h2 class="fw-bolder">@ViewData["Title"]</h2>
-
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-header">@ViewBag["Title"]</h5>
-                <div class="d-flex justify-content-center">
+
+                <div class="d-flex justify-content-center mb-4">
                     @if (!string.IsNullOrEmpty(Model.ProfilPhotoPath))
                     {
                         <img src="@Model.ProfilPhotoPath" alt="@Model.Name @Model.Surname" class="profile-photo" />
                     }
                     else
                     {
-                        <img src="~/adminAssets/img/illustrations/girl-doing-yoga-light.png" alt="Varsayılan Profil Fotoğrafı" class="profile-photo" />
+                        <img height="80" src="~/adminAssets/img/illustrations/girl-doing-yoga-light.png" alt="Varsayılan Profil Fotoğrafı" class="profile-photo" />
                     }
                 </div>
                 <div class="info-container">
                     <ul class="list-unstyled mb-6">
 
                         <li class="mb-2">
-                            <span class="h6">Email:</span>
+                            <span class="h6 fw-bolder">Email:</span>
                             <span>@Model.Email</span>
                         </li>
                         <li class="mb-2">
-                            <span class="h6">Sicil:</span>
+                            <span class="h6 fw-bolder">Sicil:</span>
                             <span>@Model.RegistrationNumber</span>
                         </li>
                         <li class="mb-2">
-                            <span class="h6">Unvan:</span>
+                            <span class="h6 fw-bolder">Unvan:</span>
                             <span>@Model.Title</span>
                         </li>
                         <li class="mb-2">
-                            <span class="h6">İsim Soyisim:</span>
+                            <span class="h6 fw-bolder">İsim Soyisim:</span>
                             <span>@Model.Name - @Model.Surname</span>
                         </li>
                         <li class="mb-2">
-                            <span class="h6">TCKN:</span>
+                            <span class="h6 fw-bolder">TCKN:</span>
                             <span>@Model.TCKN</span>
                         </li>
                         <li class="mb-2">
-                            <span class="h6">Telefon Numarası:</span>
+                            <span class="h6 fw-bolder">Telefon Numarası:</span>
                             <span>@Model.PhoneNumber</span>
                         </li>
                         <li class="mb-2">
-                            <span class="h6">Görev Yeri:</span>
+                            <span class="h6 fw-bolder">Görev Yeri:</span>
                             <span>@Model.DutyStation</span>
                         </li>
                     </ul>
 
                 </div>
+                <div class="d-flex justify-content-end">
+                    <a asp-action="Index" class="nav-link mt-2"><i class='bx bx-left-arrow-alt'></i> Listeye dön</a>
+                </div>
             </div>
+         
         </div>
     </div>
 </div>

@@ -2,6 +2,21 @@
 @{
     ViewData["Title"] = "Tüm personeller";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    //colums for datatable dynamic
+    var columns = new List<object>
+    {
+        new { data = "userName" },
+        new { data = "name" },
+        new { data = "surname" },     
+        new { data = "gsm" },
+        new { data = "registrationNumber" },
+        new { data = (string?)null, isAction = true } 
+    };
+
+    //columsJson Serialized
+    var columnsJson = System.Text.Json.JsonSerializer.Serialize(columns);
+
 }
 
 @Html.AntiForgeryToken()
@@ -20,18 +35,17 @@
             <table id="usersTable"
                    class="table table-striped"
                    data-url="@Url.Action("GetAllUserForDataTable", "ApplicationUser")"
-                   data-columns='[
-                       { "data": "userName" },
-                       { "data": "email" },
-                       { "data": "gsm" },
-                       { "data": "registrationNumber" }
-                   ]' style="width:100%">
+                   data-columns='@Html.Raw(columnsJson)'
+                   style="width:100%">
                 <thead>
                     <tr>
+
                         <th>Kullanıcı Adı</th>
-                        <th>Email</th>
+                        <th>İsim</th>
+                        <th>Soyisim</th>                       
                         <th>Telefon</th>
                         <th>Sicil No</th>
+                        <th>İşlemler</th>
                     </tr>
                 </thead>
 

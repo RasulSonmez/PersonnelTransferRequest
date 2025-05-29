@@ -9,6 +9,37 @@ namespace PersonnelTransferRequest.Common.Extensions
 {
     public static class IQueryableExtensions
     {
+
+        public static IQueryable<T> WhereDynamicOrContains<T>(this IQueryable<T> source, string[] propertyNames, string value)
+        {
+            var parameter = Expression.Parameter(typeof(T), "p");
+            Expression? orExpression = null;
+
+            foreach (var propName in propertyNames)
+            {
+                var property = Expression.PropertyOrField(parameter, propName);
+
+                if (property.Type != typeof(string))
+                    continue;
+
+                var method = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
+                var constant = Expression.Constant(value, typeof(string));
+                var containsCall = Expression.Call(property, method, constant);
+
+                orExpression = orExpression == null
+                    ? containsCall
+                    : Expression.OrElse(orExpression, containsCall);
+            }
+
+            if (orExpression == null)
+                return source;
+
+            var lambda = Expression.Lambda<Func<T, bool>>(orExpression, parameter);
+            return source.Where(lambda);
+        }
+
+
+
         public static IQueryable<T> OrderByDynamic<T>(this IQueryable<T> query, string orderByMember, bool ascending)
         {
             var param = Expression.Parameter(typeof(T), "p");

@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PersonnelTransferRequest.Web.styles.css" asp-append-version="true" />
 
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="~/adminAssets/vendor/fonts/boxicons.css" />
+
     <!--sweetalert2 Css-->
     <link href="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.css" rel="stylesheet" />
 </head>
@@ -21,7 +24,10 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <a href="/admin">Admin</a>
+                    <div>
+                        <a href="/admin">Admin</a>
+                        <a href="/profil">Profil</a>
+                    </div>
                     <partial name="_LoginPartial" />
                 </div>
             </div>

@@ -5,23 +5,44 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-        $(document).ready(function () {
-            var token = $('meta[name="csrf-token"]').attr('content');
+    $(document).ready(function () {
+        var token = $('meta[name="csrf-token"]').attr('content');
+        var tableElement = $('#@Model');
+        var columns = JSON.parse(tableElement.attr('data-columns'));
 
-            $('#@Model').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: $('#@Model').data('url'),
-                    type: 'POST',
-                    headers: {
-                        'RequestVerificationToken': token
-                    }
-                },
-                columns: JSON.parse($('#@Model').attr('data-columns')),
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+        tableElement.DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: tableElement.data('url'),
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
                 }
-            });
+            },
+            columns: columns,
+            columnDefs: [
+                {
+                    orderable: false,
+                    searchable: false,
+                    targets: -1, // Target the last column (actions)
+                    render: function (data, type, row) {
+                        return `
+                          <div class="d-flex align-items-center">
+                        <a href="/Admin/ApplicationUser/Edit/${data.id}"class="nav-link p-1"><i class="bx bx-edit"></i>
+                        </a>
+
+                        <a href="/Admin/ApplicationUser/Details/${data.id}" class="nav-link p-1"><i class="bx bx-info-square"></i></a>
+                        <a  class="nav-link p-1 cursor-pointer" onclick="confirmDelete('${data.id}','/Admin/ApplicationUser/Delete/')"><i class="bx bx-trash"></i></a>
+                          </div>
+                        `;
+                    }
+                }
+            ],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+            },
+
         });
+    });
 </script>

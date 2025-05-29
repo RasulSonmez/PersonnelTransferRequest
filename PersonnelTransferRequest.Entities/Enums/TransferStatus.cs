@@ -10,12 +10,12 @@ namespace PersonnelTransferRequest.Entities.Enums
     public enum TransferStatus
     {
         [Display(Name = "Beklemede")]
-        Pending = 1,
+        Pending = 0,
 
         [Display(Name = "Onaylandı")]
-        Approved = 2,
+        Approved = 1,
 
         [Display(Name = "Reddedildi")]
-        Rejected = 3
+        Rejected = 2
     }
 }

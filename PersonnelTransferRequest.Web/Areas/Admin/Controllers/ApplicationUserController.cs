@@ -75,6 +75,19 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     }
                 }
 
+                // Check for existing user with the same RegistrationNumber
+                if (!string.IsNullOrEmpty(model.RegistrationNumber))
+                {
+                    var existingUser = await _userManager.Users
+                        .FirstOrDefaultAsync(u => u.RegistrationNumber == model.RegistrationNumber && !u.IsDelete);
+
+                    if (existingUser != null)
+                    {
+                        ModelState.AddModelError("RegistrationNumber", "Bu sicil Numarası alınmış zaten");
+                        return View(model);
+                    }
+                }
+
 
                 // Upload profile image using custom extension
                 if (model.ProfilPhotoFile != null)
@@ -163,6 +176,20 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     }
                 }
 
+
+                // Check for existing user with the same RegistrationNumber
+                if (!string.IsNullOrEmpty(model.RegistrationNumber))
+                {
+                    var existingUser = await _userManager.Users
+                        .FirstOrDefaultAsync(u => u.RegistrationNumber == model.RegistrationNumber && !u.IsDelete);
+
+                    if (existingUser != null)
+                    {
+                        ModelState.AddModelError("RegistrationNumber", "Bu sicil Numarası alınmış zaten");
+                        return View(model);
+                    }
+                }
+
                 // Upload profile image using custom extension
                 if (model.ProfilPhotoFile != null)
                 {
@@ -178,7 +205,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 }
 
                 //remove leading and trailing spaces
-                user.RegistrationNumber = model.RegistrationNumber?.Trim();
+                user.RegistrationNumber = model.RegistrationNumber?.Trim()?? "";
                 user.Title = model.Title;
                 user.Name = model.Name;
                 user.Surname = model.Surname;
@@ -273,7 +300,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-                return NotFound();
+                return NotFound("Kullanıcı bulunamadı.");
 
             return View(new ChangePasswordViewModel { UserId = user.Id });
         }
