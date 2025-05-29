@@ -101,7 +101,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // Kullanıcıyı RegistrationNumber (sicil no) ile bul
+                // Find user with RegistrationNumber (sicil no) 
                 var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RegistrationNumber == Input.RegistrationNumber);
 
                 if (user == null)
@@ -110,7 +110,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
                     return Page();
                 }
 
-                // Normal giriş işlemi
+                // Normal login works with UserName, so we can use RegistrationNumber as UserName
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)

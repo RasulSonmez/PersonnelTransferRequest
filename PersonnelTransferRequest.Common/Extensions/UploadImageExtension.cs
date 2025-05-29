@@ -6,6 +6,12 @@ using System.Linq;
 
 namespace PersonnelTransferRequest.Common.Extensions
 {
+
+    /// <summary>
+    /// Provides an extension method to upload and store profile images on the server with validation for allowed file types.
+    /// </summary>
+
+
     public static class UploadImageExtension
     {
         private static readonly List<string> AllowedExtensions = new List<string> { ".jpg", ".png", ".svg", ".jpeg" };

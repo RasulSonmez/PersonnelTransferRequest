@@ -239,7 +239,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("Varsayılan kullanıcı arayüzü e-posta desteği olan bir kullanıcı deposu gerektirir.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }

@@ -7,6 +7,18 @@ using System.Threading.Tasks;
 
 namespace PersonnelTransferRequest.Common.Extensions
 {
+    /// <summary>
+ /// Dynamically builds an OR-based 'Where' clause using 'Contains' for string properties.
+ /// Filters the IQueryable<T> source based on whether any of the specified string properties
+ /// contain the given value.
+ /// </summary>
+ /// <typeparam name="T">Type of the elements in the source IQueryable.</typeparam>
+ /// <param name="source">The source IQueryable to filter.</param>
+ /// <param name="propertyNames">Array of property names (must be strings) to apply the Contains filter.</param>
+ /// <param name="value">The value to search for within the specified properties.</param>
+ /// <returns>A filtered IQueryable<T> where any of the specified string properties contain the value.</returns>
+ /// 
+
     public static class IQueryableExtensions
     {
 

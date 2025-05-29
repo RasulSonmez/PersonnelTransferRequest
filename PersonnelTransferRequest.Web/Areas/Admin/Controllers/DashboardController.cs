@@ -18,6 +18,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
+
+            //getting counts for dashboard
             var viewModel = new DashboardViewModel
             {
                 PersonnelCount = _context.Users.Count(),
