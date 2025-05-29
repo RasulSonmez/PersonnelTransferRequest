@@ -3,6 +3,14 @@ using PersonnelTransferRequest.Web.ViewModels.DataTable;
 
 namespace PersonnelTransferRequest.Web.Services.DataTable
 {
+
+    /// <summary>
+    /// Provides a generic service for handling server-side DataTable operations such as searching, sorting, and pagination.
+    /// It leverages reflection and dynamic LINQ expressions to apply filters and ordering based on client-side input.
+    /// The searchable fields are defined per entity via the SearchColumnConfig helper.
+    /// </summary>
+
+
     public class DataTableService : IDataTableService
     {
         public async Task<DataTableResult<T>> GetResultAsync<T>(IQueryable<T> query, DataTableAjaxPostModel model)
@@ -14,13 +22,16 @@ namespace PersonnelTransferRequest.Web.Services.DataTable
             };
 
             // Search
+            // Search
             if (!string.IsNullOrEmpty(model.search?.value))
             {
                 var searchValue = model.search.value;
-                var searchableColumns = new[] { "Name", "Surname", "RegistrationNumber", "UserName" };
+
+                var searchableColumns = SearchColumnConfig.GetSearchableColumnsFor<T>();
 
                 query = query.WhereDynamicOrContains(searchableColumns, searchValue);
             }
+
 
             result.recordsFiltered = await Task.FromResult(query.Count());
 

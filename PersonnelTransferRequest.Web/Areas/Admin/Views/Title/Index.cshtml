@@ -1,67 +1,60 @@
-﻿@model IEnumerable<Title>
+﻿
 @{
     ViewData["Title"] = "Unvanlar";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    //colums for datatable dynamic
+    var columns = new List<object>
+{
+      
+        new { data = "titleName" },     
+        new {
+            data = (string?)null,
+            isAction = true,
+            hasEdit = true,
+            hasDetails = false,
+            hasDelete = true,
+            editUrl = "/Admin/Title/Edit/",
+            detailsUrl = "/Admin/Title/Details/",
+            deleteUrl = "/Admin/Title/Delete/"
+        } //actions
+    };
+
+    //columsJson Serialized
+    var columnsJson = System.Text.Json.JsonSerializer.Serialize(columns);
+
 }
 
-<h2 class="card-header">@ViewData["Title"]</h2>
+@Html.AntiForgeryToken()
+
+<h2 class="fw-bolder">@ViewData["Title"]</h2>
 
 <div class="card">
-    <div class="card-body">
 
+
+    <div class="card-body">
         <div class="mb-4">
             <a asp-action="Create" class="btn btn-primary text-white">Unvan Ekle</a>
 
         </div>
-
         <div class="table-responsive text-nowrap">
-            <table class="table table-striped">
+            <table id="titleTable"
+                   class="table table-striped"
+                   data-url="@Url.Action("GetAllTitlesForDataTable", "Title")"
+                   data-columns='@Html.Raw(columnsJson)'
+                   style="width:100%">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Unvan Adı</th>
+                       
+                        <th>Unvan</th>                   
                         <th>İşlemler</th>
                     </tr>
                 </thead>
-                <tbody class="table-border-bottom-0">
 
-
-                    @{
-                        var counter = 1;
-                    }
-                    @foreach (Title item in Model)
-                    {
-                        <tr>
-                          
-                        </tr>
-                        <tr>
-                            <td>
-                                @counter
-                            </td>
-                            <td><strong>@item.TitleName</strong></td>
-
-                            <td>
-                                <div class="d-flex align-items-center">
-
-                                    <a data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true" title="" data-bs-original-title="<span>Düzenle</span>" class="nav-link p-1" asp-action="Edit" asp-route-id="@item.Id"><i class="bx bx-edit"></i></a>
-                                    <a data-bs-toggle="tooltip"
-                                       data-bs-offset="0,4"
-                                       data-bs-placement="top"
-                                       data-bs-html="true"
-                                       title="" data-bs-original-title="<span>Sil</span>"
-                                       class="nav-link p-1 cursor-pointer"
-                                       onclick="confirmDelete('@item.Id','/Admin/Title/Delete/')"><i class="bx bx-trash"></i></a>
-                                </div>
-
-
-                            </td>
-                        </tr>
-                        counter++;
-                    }
-
-                </tbody>
+                <!--Data getting from dataTable-->
             </table>
         </div>
-
     </div>
 </div>
+
+@await Html.PartialAsync("_DataTableAjaxPartial", "titleTable")

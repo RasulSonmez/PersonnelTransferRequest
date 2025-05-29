@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Services.DataTable;
+using PersonnelTransferRequest.Web.ViewModels.DataTable;
 
 namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 {
@@ -17,14 +18,29 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         }
 
         // Action method to list all titles
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
         {
-            var titles = await _context.Titles
-                .Where(t => t.DeletedAt == null)
-                .OrderByDescending(t=> t.CreatedAt)
-                .ToListAsync();
-            return View(titles);
+            return View();
         }
+
+        //Action method to load user data for DataTable
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetAllTitlesForDataTable(DataTableAjaxPostModel model)
+        {
+            try
+            {
+                var query = _context.Titles.Where(t=> t.DeletedAt == null).OrderByDescending(t => t.CreatedAt);
+                var result = await _dataTableService.GetResultAsync(query, model);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong: " + ex.Message);
+            }
+        }
+
 
         //Action method to show create title form
         public IActionResult Create()

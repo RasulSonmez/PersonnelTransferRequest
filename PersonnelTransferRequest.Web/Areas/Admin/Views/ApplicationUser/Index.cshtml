@@ -8,10 +8,19 @@
     {
         new { data = "userName" },
         new { data = "name" },
-        new { data = "surname" },     
+        new { data = "surname" },
         new { data = "gsm" },
         new { data = "registrationNumber" },
-        new { data = (string?)null, isAction = true } 
+        new {
+            data = (string?)null,
+            isAction = true,
+            hasEdit = true,
+            hasDetails = true,
+            hasDelete = true,
+            editUrl = "/Admin/ApplicationUser/Edit/",
+            detailsUrl = "/Admin/ApplicationUser/Details/",
+            deleteUrl = "/Admin/ApplicationUser/Delete/"
+        }
     };
 
     //columsJson Serialized
@@ -39,7 +48,7 @@
                    style="width:100%">
                 <thead>
                     <tr>
-
+                      
                         <th>Kullanıcı Adı</th>
                         <th>İsim</th>
                         <th>Soyisim</th>                       
