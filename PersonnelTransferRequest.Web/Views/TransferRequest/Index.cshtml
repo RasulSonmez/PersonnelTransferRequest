@@ -1,0 +1,57 @@
+﻿@model List<TransferRequest>
+
+@{
+    ViewData["Title"] = "Tayin Taleplerim";
+}
+
+<h2>Tayin Taleplerim</h2>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Tayin Talebinde Bulun
+</button>
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">Henüz bir tayin talebiniz bulunmamaktadır.</div>
+}
+else
+{
+    foreach (var request in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                @request.RequestDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm") - @request.RequestType.GetDisplayName()
+            </div>
+            <div class="card-body">
+                <p><strong>Durum:</strong> @request.Status.GetDisplayName()</p>
+                @if (!string.IsNullOrEmpty(request.Description))
+                {
+                    <p><strong>Açıklama:</strong> @request.Description</p>
+                }
+
+                <h5>Tercihler:</h5>
+                @if (request.Preferences != null && request.Preferences.Any())
+                {
+                    <ol>
+                        @foreach (var preference in request.Preferences.OrderBy(p => p.PriorityOrder))
+                        {
+                            <li>@preference.CourtHouse (@preference.PriorityOrder). tercih</li>
+                        }
+                    </ol>
+                }
+                else
+                {
+                    <p class="text-muted">Hiç tercih yapılmamış.</p>
+                }
+            </div>
+        </div>
+    }
+}
+
+
+<div id="newTransferRequestModal">
+    <!--Get coming transfer request modal-->
+</div>
+

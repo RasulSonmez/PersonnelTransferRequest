@@ -1,0 +1,125 @@
+﻿@model TransferRequestCreateViewModel
+@{
+    var openModal = TempData["OpenModal"] as string ?? "false";
+
+    var errorsJson = TempData["ModelErrors"] as string;
+    var errors = string.IsNullOrEmpty(errorsJson)
+        ? new List<string>()
+        : Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(errorsJson);
+}
+<!--for open modal after errors.-->
+<input type="hidden" id="openModalFlag" value="@openModal" />
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Tayin Talebi Oluştur</h1>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+
+                @if (errors != null && errors.Count > 0)
+                {
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach (var error in errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <div class="mb-5">
+                    <small>En fazla 5 adet tercihte bulunabilirsiniz. Tercihler farklı iller içermelidir.</small>
+                </div>
+                <form asp-action="TransferRequestCreate" method="post">
+                    <div class="form-group mb-3">
+                        <label asp-for="RequestType" class="form-label"></label>
+                        <select asp-for="RequestType" class="form-control" asp-items="Html.GetEnumSelectList<RequestType>()">
+                            <option value="">Talep Nedeni Seçiniz</option>
+                        </select>
+                        <span asp-validation-for="RequestType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <hr />
+                    <h5>Tercih Edilen Adalet Sarayları</h5>
+
+                    <div id="preferencesContainer">
+                        <!--preferences come jquery-->
+                    </div>
+
+                    <button type="button" id="addPreferenceBtn" class="btn btn-outline-primary mt-2">
+                        <i class="bi bi-plus-lg"></i> Tercih Ekle
+                    </button>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+
+<script>
+    //functions come from js/site.js
+    $(document).ready(function () {
+        // Initially add one preference card
+        $('#preferencesContainer').append(createPreferenceCard(preferenceIndex));
+        preferenceIndex++;
+
+        // Update Add button visibility
+        toggleAddButton();
+
+        // Initialize select2 plugin
+        initializeSelect2();
+
+        // Disable duplicate options
+        refreshSelectOptions();
+
+        // Add new preference card on button click, if max not reached
+        $('#addPreferenceBtn').on('click', function () {
+            if (preferenceIndex < maxPreferences) {
+                $('#preferencesContainer').append(createPreferenceCard(preferenceIndex));
+                preferenceIndex++;
+                updatePriorityOrders();
+                toggleAddButton();
+
+                initializeSelect2();
+                refreshSelectOptions();
+            }
+        });
+
+        // Remove preference card on remove button click
+        $('#preferencesContainer').on('click', '.remove-btn', function () {
+            $(this).closest('.card').remove();
+            preferenceIndex--;
+            updatePriorityOrders();
+            toggleAddButton();
+            refreshSelectOptions();
+        });
+
+        // Update options whenever a select value changes
+        $('#preferencesContainer').on('change', '.select2Preference', function () {
+            refreshSelectOptions();
+        });
+    });
+</script>

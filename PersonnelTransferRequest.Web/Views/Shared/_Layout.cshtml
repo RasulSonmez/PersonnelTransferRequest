@@ -13,6 +13,10 @@
 
     <!--sweetalert2 Css-->
     <link href="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.css" rel="stylesheet" />
+
+
+    <!--Select2-->
+    <link href="~/adminAssets/vendor/libs/select2/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -27,6 +31,8 @@
                     <div>
                         <a href="/admin">Admin</a>
                         <a href="/profil">Profil</a>
+                  
+                        <a href="/tayin-taleplerim">Tayin Taleplerim</a>
                     </div>
                     <partial name="_LoginPartial" />
                 </div>
@@ -48,8 +54,14 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
+    <!--cities-->
+    <script src="~/js/cities.js"></script>
+
     <!--sweetalert2-->
     <script src="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.min.js"></script>
+
+    <!--Select2-->
+    <script src="~/adminAssets/vendor/libs/select2/js/select2.min.js"></script>
 
     <!--For success and error message-->
     @if (TempData["SuccessMessage"] != null)

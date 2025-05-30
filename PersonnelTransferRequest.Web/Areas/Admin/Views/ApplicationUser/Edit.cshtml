@@ -53,7 +53,9 @@
 
                     <div class="form-group mb-3">
                         <label asp-for="Title" class="fw-bolder mb-2"></label>
-                        <input asp-for="Title" class="form-control" />
+                        <select asp-for="Title" asp-items="@ViewData["Titles"] as SelectList" class="form-select">
+                            <option value="">Unvan Seçiniz</option>
+                        </select>
                         <span asp-validation-for="Title" class="text-danger fs-tiny"></span>
                     </div>
 
@@ -79,12 +81,16 @@
 
                     <div class="form-group mb-3">
                         <label asp-for="DutyStation" class="fw-bolder mb-2"></label>
-                        <input asp-for="DutyStation" class="form-control" />
+
+                        <select asp-for="DutyStation" class="form-select citiesSelect">
+                            <!--option come from cities.js-->
+                        </select>
+
                         <span asp-validation-for="DutyStation" class="text-danger fs-tiny"></span>
                     </div>
 
                     <div class="form-group mb-3">
-                      
+
 
                         <div class="row align-items-center">
                             <div class="col-md-6">
@@ -108,7 +114,7 @@
 
                     <div class="form-group mb-3">
                         <label class="fw-bolder mb-2">Şifre</label>
-                        <input name="password" type="password" class="form-control" required />
+                        <input name="newPassword" type="password" class="form-control" required />
 
                     </div>
 
@@ -126,4 +132,28 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+
+    <script>
+        //cities and select2
+    $(document).ready(function () {
+        const $select = $('.citiesSelect');
+        $select.empty();
+
+            citiesArray.forEach(city => {
+                const optionText = city === "" ? "İl Seçiniz" : city;
+                $select.append(new Option(optionText, city));
+            });
+
+
+         const selectedCity = @Html.Raw(Json.Serialize(Model.DutyStation ?? ""));
+
+            if (selectedCity) {
+                $select.val(selectedCity);
+            }
+
+            $select.select2();
+        });
+    </script>
+
 }

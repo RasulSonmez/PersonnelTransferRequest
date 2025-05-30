@@ -19,6 +19,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddErrorDescriber<CustomIdentityErrorDescriber>();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
+builder.Services.AddMvc().AddSessionStateTempDataProvider();
 
 // Registering the DataTable service
 builder.Services.AddScoped<IDataTableService, DataTableService>();
@@ -43,24 +45,18 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    // Area-based route
-    endpoints.MapControllerRoute(
-        name: "areas",
-        pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
-    );
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
 
-    // Default route
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}"
-    );
-});
-
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 app.MapRazorPages();
 
 app.Run();

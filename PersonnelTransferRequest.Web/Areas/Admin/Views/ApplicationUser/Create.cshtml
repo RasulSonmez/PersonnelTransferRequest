@@ -26,7 +26,7 @@
 
 <div class="card">
     <div class="card-body">
-     
+
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div class="row row-cols-1 row-cols-lg-2">
                 <div class="col">
@@ -37,30 +37,32 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Name"  class="fw-bolder mb-2"></label>
+                        <label asp-for="Name" class="fw-bolder mb-2"></label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger fs-tiny"></span>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Surname"  class="fw-bolder mb-2"></label>
+                        <label asp-for="Surname" class="fw-bolder mb-2"></label>
                         <input asp-for="Surname" class="form-control" />
                         <span asp-validation-for="Surname" class="text-danger fs-tiny"></span>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Title"  class="fw-bolder mb-2"></label>
-                        <input asp-for="Title" class="form-control" />
+                        <label asp-for="Title" class="fw-bolder mb-2"></label>
+                        <select asp-for="Title" asp-items="@ViewData["Titles"] as SelectList" class="form-select">
+                            <option value="">Unvan Seçiniz</option>
+                        </select>
                         <span asp-validation-for="Title" class="text-danger fs-tiny"></span>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="TCKN"  class="fw-bolder mb-2"></label>
+                        <label asp-for="TCKN" class="fw-bolder mb-2"></label>
                         <input asp-for="TCKN" class="form-control" inputmode="numeric" pattern="[0-9]*"
                                oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                         <span asp-validation-for="TCKN" class="text-danger fs-tiny"></span>
                     </div>
-                    
+
                 </div>
 
                 <div class="col">
@@ -72,13 +74,18 @@
                         <span asp-validation-for="GSM" class="text-danger fs-tiny"></span>
                     </div>
 
-                   
 
                     <div class="form-group mb-3">
                         <label asp-for="DutyStation" class="fw-bolder mb-2"></label>
-                        <input asp-for="DutyStation" class="form-control" />
+
+                        <select asp-for="DutyStation" class="form-select citiesSelect">
+                            <!--option come from cities.js-->
+                        </select>
+
                         <span asp-validation-for="DutyStation" class="text-danger fs-tiny"></span>
                     </div>
+
+
 
                     <div class="form-group mb-3">
                         <label asp-for="ProfilPhotoFile" class="fw-bolder mb-2">Profile Fotoğrafı</label>
@@ -89,7 +96,7 @@
                     <div class="form-group mb-3">
                         <label class="fw-bolder mb-2">Şifre</label>
                         <input name="password" type="password" class="form-control" required />
-                       
+
                     </div>
 
 
@@ -106,4 +113,17 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+
+    <script>
+        $(document).ready(function () {
+            const $select = $('.citiesSelect');
+            $select.empty(); // önce içeriği temizle
+            citiesArray.forEach(city => {
+                $select.append(new Option(city === "" ? "İl Seçiniz" : city, city));
+            });
+
+            $select.select2();
+        });
+    </script>
 }

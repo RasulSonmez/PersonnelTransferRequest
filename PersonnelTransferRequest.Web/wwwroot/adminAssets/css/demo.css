@@ -82,27 +82,17 @@
 }
 
 /*
-* Layout demo
+* Select2
 ******************************************************************************/
 
-.layout-demo-wrapper {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  margin-top: 1rem;
-}
-.layout-demo-placeholder img {
-  width: 900px;
-}
-.layout-demo-info {
-  text-align: center;
-  margin-top: 1rem;
+
+.select2-container--default .select2-selection--single {
+    height: 35.55px !important;
+    border: 1px solid #d9dee3 !important;
+    color: #697a8d !important;
 }
 
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 34px !important;
+        color: #697a8d !important;
+    }

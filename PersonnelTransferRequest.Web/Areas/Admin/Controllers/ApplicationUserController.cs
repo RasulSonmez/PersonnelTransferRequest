@@ -41,13 +41,17 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Something went wrong: " + ex.Message);
+                return StatusCode(500, "Birşeyler ters gitti: " + ex.Message);
             }
         }
 
         //Action method to show create user form
         public IActionResult Create()
-        {          
+        {
+            ViewData["Titles"] = new SelectList(_context.Titles
+    .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+    .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
             return View();
         }
 
@@ -60,7 +64,13 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             try
             {
                 if (!ModelState.IsValid)
+                {
+                    ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
                     return View(model);
+                }
 
                 // Check for existing user with the same TCKN
                 if (!string.IsNullOrEmpty(model.TCKN))
@@ -71,6 +81,11 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     if (existingUser != null)
                     {
                         ModelState.AddModelError("TCKN", "TCKN doğru olduğuna emin olunuz.");
+
+                        ViewData["Titles"] = new SelectList(_context.Titles
+                  .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                  .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
                         return View(model);
                     }
                 }
@@ -84,6 +99,11 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     if (existingUser != null)
                     {
                         ModelState.AddModelError("RegistrationNumber", "Bu sicil Numarası alınmış zaten");
+
+                        ViewData["Titles"] = new SelectList(_context.Titles
+                  .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                  .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
                         return View(model);
                     }
                 }
@@ -97,14 +117,33 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     if (string.IsNullOrEmpty(uploadedPath))
                     {
                         ModelState.AddModelError("ProfilPhotoFile", "Yüklenen dosya geçersiz veya yüklenemedi.");
+
+                        ViewData["Titles"] = new SelectList(_context.Titles
+                  .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                  .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
                         return View(model);
                     }
 
                     model.ProfilPhotoPath = uploadedPath;
                 }
 
+
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    ModelState.AddModelError("password", "Şifre alanı zorunludur.");
+
+                    ViewData["Titles"] = new SelectList(_context.Titles
+                  .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                  .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
+                    return View(model);
+                }
+
+
                 //remove leading and trailing spaces
                 model.UserName = model.RegistrationNumber?.Trim();
+                model.EmailConfirmed = true;
                 model.Email = $"{model.RegistrationNumber}@adalet.com"; // Adjust this if needed
 
                 // Create user with provided password
@@ -128,6 +167,10 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 ModelState.AddModelError(string.Empty, "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz." + ex.Message);
               
             }
+                
+            ViewData["Titles"] = new SelectList(_context.Titles
+                  .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                  .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
 
             return View(model);
         }
@@ -137,11 +180,16 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id))
-                return NotFound();
+                return NotFound("ID bulunamadı.");
 
             var user = await _userManager.FindByIdAsync(id);
             if (user == null || user.IsDelete)
-                return NotFound();
+                return NotFound("Kullanıcı bulunamadı.");
+
+            ViewData["Titles"] = new SelectList(_context.Titles
+     .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+     .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
 
             return View(user);
         }
@@ -149,21 +197,27 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         //Action method to handle edit user form submission
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, ApplicationUser model)
+        public async Task<IActionResult> Edit(string id, ApplicationUser model, string newPassword)
         {
             if (id != model.Id)
-                return NotFound();
+                return NotFound("ID bulunamadı.");
 
             try
             {
                 if (!ModelState.IsValid)
+                {
+                    ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
                     return View(model);
+                }
 
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null || user.IsDelete)
-                    return NotFound();
+                    return NotFound("Kullanıcı bulunmaadı");
 
-                // Check for existing user with the same TCKN
+                // Check for existing user with the same TCKN (exclude current user)
                 if (!string.IsNullOrEmpty(model.TCKN))
                 {
                     var tcknOwner = await _userManager.Users
@@ -171,24 +225,35 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
                     if (tcknOwner != null)
                     {
-                        ModelState.AddModelError("TCKN", "TCKN doğru olduğuna emin olunuz.");
+                        ModelState.AddModelError("TCKN", "Bu TCKN başka bir kullanıcıya ait.");
+
+                        ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
                         return View(model);
                     }
                 }
 
-
-                // Check for existing user with the same RegistrationNumber
+                // Check for existing user with the same RegistrationNumber (exclude current user)
                 if (!string.IsNullOrEmpty(model.RegistrationNumber))
                 {
                     var existingUser = await _userManager.Users
-                        .FirstOrDefaultAsync(u => u.RegistrationNumber == model.RegistrationNumber && !u.IsDelete);
+                        .FirstOrDefaultAsync(u => u.RegistrationNumber == model.RegistrationNumber && u.Id != id && !u.IsDelete);
 
                     if (existingUser != null)
                     {
-                        ModelState.AddModelError("RegistrationNumber", "Bu sicil Numarası alınmış zaten");
+                        ModelState.AddModelError("RegistrationNumber", "Bu sicil numarası başka bir kullanıcıya ait.");
+
+                        ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
+
                         return View(model);
                     }
                 }
+
 
                 // Upload profile image using custom extension
                 if (model.ProfilPhotoFile != null)
@@ -198,11 +263,54 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                     if (string.IsNullOrEmpty(uploadedPath))
                     {
                         ModelState.AddModelError("ProfilPhotoFile", "Yüklenen dosya geçersiz veya yüklenemedi.");
+
+                        ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
                         return View(model);
                     }
 
                     user.ProfilPhotoPath = uploadedPath;
                 }
+
+
+                // update password if provided
+                if (!string.IsNullOrWhiteSpace(newPassword))
+                {
+                    var hasPassword = await _userManager.HasPasswordAsync(user);
+
+                    if (hasPassword)
+                    {
+                        var removePassResult = await _userManager.RemovePasswordAsync(user);
+                        if (!removePassResult.Succeeded)
+                        {
+                            foreach (var error in removePassResult.Errors)
+                                ModelState.AddModelError(string.Empty, error.Description);
+
+                            ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
+                            return View(model);
+                        }
+                    }
+
+                    var addPassResult = await _userManager.AddPasswordAsync(user, newPassword);
+                    if (!addPassResult.Succeeded)
+                    {
+                        foreach (var error in addPassResult.Errors)
+                            ModelState.AddModelError(string.Empty, error.Description);
+
+                        ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
+                        return View(model);
+                    }
+                }
+
+
 
                 //remove leading and trailing spaces
                 user.RegistrationNumber = model.RegistrationNumber?.Trim()?? "";
@@ -221,7 +329,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
                 if (result.Succeeded)
                 {
-                    TempData["SuccessMessage"] = "Personel başarıyla oluşturuldu.";
+                    TempData["SuccessMessage"] = "Personel başarıyla güncellendi.";
                     return RedirectToAction("Index");
                 }
 
@@ -236,6 +344,10 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 ModelState.AddModelError(string.Empty, "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz." + ex.Message);
             }
 
+            ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
             return View(model);
         }
 
@@ -246,7 +358,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             if (string.IsNullOrEmpty(id))
             {
-                return NotFound();
+                return NotFound("ID bulunamadı.");
             }
 
             var user = await _userManager.Users
@@ -255,7 +367,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Kullanıcı bulunamadı.");
             }
         
             return View(user);
@@ -268,12 +380,12 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("ID bulunamadı.");
             }
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Kullanıcı bulunamadı.");
             }
 
             try
@@ -315,7 +427,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null)
-                return NotFound();
+                return NotFound("Kullanıcı bulunamadı.");
 
             var changePassResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
 

@@ -37,7 +37,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Something went wrong: " + ex.Message);
+                return StatusCode(500, "Birşeyler ters gitti: " + ex.Message);
             }
         }
 
@@ -90,11 +90,11 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-                return NotFound();
+                return NotFound("ID bulunamadı.");
 
             var title = await _context.Titles.FindAsync(id);
             if (title == null || title.DeletedAt != null)
-                return NotFound();
+                return NotFound("Unvan bulunamadı.");
 
             return View(title);
         }
@@ -105,7 +105,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, Title model)
         {
             if (id != model.Id)
-                return NotFound();
+                return NotFound("ID bulunamadı.");
 
             try
             {
@@ -114,7 +114,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
                 var existingTitle = await _context.Titles.FindAsync(id);
                 if (existingTitle == null || existingTitle.DeletedAt != null)
-                    return NotFound();
+                    return NotFound("Unvan bulunamadı.");
 
                 // Duplicate check (except self)
                 bool duplicate = await _context.Titles
@@ -152,12 +152,12 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("ID bulunamadı.");
             }
             var title = await _context.Titles.FindAsync(id);
             if (title == null)
             {
-                return NotFound();
+                return NotFound("Unvan bulunamadı.");
             }
 
             try

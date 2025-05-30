@@ -5,6 +5,10 @@
     {
       "library": "sweetalert2@11.11.1",
       "destination": "wwwroot/adminAssets/vendor/libs/sweetalert2/"
+    },
+    {
+      "library": "select2@4.0.13",
+      "destination": "wwwroot/adminAssets/vendor/libs/select2/"
     }
   ]
 }
