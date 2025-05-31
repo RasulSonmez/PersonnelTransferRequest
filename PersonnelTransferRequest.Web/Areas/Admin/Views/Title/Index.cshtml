@@ -6,8 +6,8 @@
     //colums for datatable dynamic
     var columns = new List<object>
 {
-      
-        new { data = "titleName" },     
+        new { data = "createdAt" },
+        new { data = "titleName" },
         new {
             data = (string?)null,
             isAction = true,
@@ -45,8 +45,9 @@
                    style="width:100%">
                 <thead>
                     <tr>
-                       
-                        <th>Unvan</th>                   
+
+                        <th>Oluşturulma Tarihi</th>
+                        <th>Unvan</th>
                         <th>İşlemler</th>
                     </tr>
                 </thead>

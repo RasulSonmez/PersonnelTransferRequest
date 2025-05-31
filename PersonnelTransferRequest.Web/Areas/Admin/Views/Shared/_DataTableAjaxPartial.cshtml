@@ -1,15 +1,30 @@
 ﻿@model string
 <script src="~/adminAssets/vendor/libs/jquery/jquery.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="~/adminAssets/vendor/libs/dataTable/jquery.dataTables.js"></script>
+<script src="~/adminAssets/vendor/libs/dataTable/dataTables.bootstrap5.js"></script>
+
 <script>
     $(document).ready(function () {
         var token = $('meta[name="csrf-token"]').attr('content');
         var tableElement = $('#@Model');
         var columns = JSON.parse(tableElement.attr('data-columns'));
-
         // Find action column configuration
         var actionColumn = columns.find(col => col.isAction);
+
+        // Helper function for date format
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            var date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+
+            var day = date.getDate().toString().padStart(2, '0');
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var year = date.getFullYear();
+            var hours = date.getHours().toString().padStart(2, '0');
+            var minutes = date.getMinutes().toString().padStart(2, '0');
+
+            return `${day}.${month}.${year} ${hours}:${minutes}`;
+        }
 
         tableElement.DataTable({
             processing: true,
@@ -23,36 +38,41 @@
             },
             columns: columns,
             columnDefs: [
-             
-
+                // Rule for date format - for createdAt column
+                {
+                    targets: columns.findIndex(col => col.data === 'createdAt' || col.data === 'requestDate'),
+                    render: function (data, type, row) {
+                        if (type === 'display' || type === 'type') {
+                            return formatDate(data);
+                        }
+                        return data;
+                    }
+                },
+                // Action column
                 {
                     orderable: false,
                     searchable: false,
                     targets: -1, // Target the last column (actions)
                     render: function (data, type, row) {
                         var buttons = '<div class="d-flex align-items-center">';
-
                         // Edit button - always show if hasEdit is true
-                        if (actionColumn.hasEdit ===true) {
+                        if (actionColumn.hasEdit === true) {
                             buttons += `<a href="${actionColumn.editUrl}${row.id}" class="nav-link p-1">
                                           <i class="bx bx-edit"></i>
                                         </a>`;
                         }
-
                         // Details button - show only if hasDetails is true
                         if (actionColumn.hasDetails === true) {
                             buttons += `<a href="${actionColumn.detailsUrl}${row.id}" class="nav-link p-1">
                                           <i class="bx bx-info-square"></i>
                                         </a>`;
                         }
-
                         // Delete button - show only if hasDelete is true
                         if (actionColumn.hasDelete === true) {
                             buttons += `<a class="nav-link p-1 cursor-pointer" onclick="confirmDelete('${row.id}','${actionColumn.deleteUrl}')">
                                           <i class="bx bx-trash"></i>
                                         </a>`;
                         }
-
                         buttons += '</div>';
                         return buttons;
                     }

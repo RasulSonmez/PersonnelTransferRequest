@@ -1,0 +1,138 @@
+﻿@model TransferRequest
+
+@{
+    ViewData["Title"] = "Tayin Detayı";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2 class="fw-bolder">@ViewData["Title"]</h2>
+<div class="row  mb-4">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <strong class="fs-5">Genel Bilgiler</strong>
+            </div>
+            <hr class="my-1"/>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Profil Fotoğrafı</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.ApplicationUser.ProfilPhotoPath))
+                        {
+                            <img src="@Url.Content(Model.ApplicationUser.ProfilPhotoPath)" alt="Profil Fotoğrafı" width="100" />
+                        }
+                        else
+                        {
+                            <span><i class="bx bx-user-circle bx-md text-muted"></i></span>
+                        }
+                    </dd>
+
+
+                    <dt class="col-sm-3">İsim Soyisim:</dt>
+                    <dd class="col-sm-9">@Model.ApplicationUser?.Name @Model.ApplicationUser?.Surname</dd>
+
+                    <dt class="col-sm-3">Sicil Numarası:</dt>
+                    <dd class="col-sm-9">@Model.ApplicationUser?.RegistrationNumber</dd>
+
+                    <dt class="col-sm-3">Unvan:</dt>
+                    <dd class="col-sm-9">@Model.ApplicationUser?.Title</dd>
+
+                    <dt class="col-sm-3">TCKN:</dt>
+                    <dd class="col-sm-9">@Model.ApplicationUser?.TCKN</dd>
+
+                    <dt class="col-sm-3">Telefon Numarası:</dt>
+                    <dd class="col-sm-9">@Model.ApplicationUser?.GSM</dd>
+
+                    <dt class="col-sm-3">Görev Yeri:</dt>
+                    <dd class="col-sm-9">@Model.ApplicationUser?.DutyStation</dd>
+
+                    <dt class="col-sm-3">Açıklama:</dt>
+                    <dd class="col-sm-9">@Model.Description</dd>
+
+                    <dt class="col-sm-3">Talep Nedeni:</dt>
+                    <dd class="col-sm-9">@Model.RequestType</dd>
+
+                    <dt class="col-sm-3">Talep Tarihi:</dt>
+                    <dd class="col-sm-9">@Model.RequestDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-3">Durumu:</dt>
+                    <dd class="col-sm-9">@Model.Status</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+
+        @if (Model.Preferences != null && Model.Preferences.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong class="fs-5">Tercihler</strong>
+                </div>
+                <hr class="my-1" />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Tercih Sırası</th>
+                                <th>Adalet Sarayı</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pref in Model.Preferences.OrderBy(p => p.PriorityOrder))
+                            {
+                                <tr>
+                                    <td>@pref.PriorityOrder</td>
+                                    <td>@pref.CourtHouse</td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <strong class="fs-5">Tayin Durumunu Güncelleme</strong>
+                    <div>
+                        <span class="fs-tiny text-danger">Seçiminizi kaydetmeniz durumunda tayin durumu güncellenecektir.</span>
+                    </div>
+                </div>
+              
+                <hr class="my-1" />
+                <div class="card-body">
+                    <form asp-action="UpdateStatus" method="post" class="mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-4">
+                            <label for="Status" class="form-label">Durum</label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<TransferStatus>()"></select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Kaydet</button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mt-3">
+                Bu talebe ait herhangi bir tercih bulunmamaktadır.
+            </div>
+        }
+    </div>
+
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div >
+            <a asp-area="Admin" asp-controller="TransferRequest" asp-action="Index" class="nav-link mt-2"><i class='bx bx-left-arrow-alt'></i> Listeye dön</a>
+        </div>
+    </div>
+</div>

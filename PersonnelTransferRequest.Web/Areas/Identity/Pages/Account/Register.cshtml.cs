@@ -80,7 +80,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-
+            [Required(ErrorMessage = "Email alanı zorunludur.")]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -128,6 +128,10 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "Zorunlu alan")]
             [Display(Name = "Görev Yeri")]
             public string DutyStation { get; set; }
+
+            [Display(Name = "Oluşturulma Tarihi")]
+            [DataType(DataType.DateTime)]
+            public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
             [Display(Name = "Fotoğraf")]
             [DataType(DataType.Upload)]
@@ -202,6 +206,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
             {
                 var user = new ApplicationUser
                 {
+                    CreatedAt = Input.CreatedAt ?? DateTime.Now,
                     EmailConfirmed = true,
                     RegistrationNumber = Input.RegistrationNumber,
                     Title = Input.Title,

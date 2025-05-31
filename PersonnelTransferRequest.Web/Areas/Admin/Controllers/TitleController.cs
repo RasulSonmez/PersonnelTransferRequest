@@ -21,6 +21,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            //data comes from dynamic data table GetAllTitlesForDataTable
             return View();
         }
 
@@ -58,6 +59,14 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 if (!ModelState.IsValid)
                     return View(model);
 
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "Kullanıcı doğrulanamadı. Lütfen tekrar giriş yapınız.";
+                    return RedirectToAction("Error", "Home", new { code = 401 });
+                }
+
                 // Duplicate check
                 var exists = await _context.Titles
                     .AnyAsync(t => t.TitleName.ToLower() == model.TitleName.ToLower() && t.DeletedAt == null);
@@ -70,6 +79,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
                 //remove leading and trailing spaces
                 model.TitleName = model.TitleName.Trim();
+                model.CreatedById = user.Id;
                 await _context.Titles.AddAsync(model);
                 await _context.SaveChangesAsync();
 
@@ -90,11 +100,18 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-                return NotFound("ID bulunamadı.");
+            {
+                TempData["ErrorMessage"] = "ID bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 400 });
+            }
 
             var title = await _context.Titles.FindAsync(id);
             if (title == null || title.DeletedAt != null)
-                return NotFound("Unvan bulunamadı.");
+            {
+                TempData["ErrorMessage"] = "Unvan bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 404 });
+            }
+
 
             return View(title);
         }
@@ -105,16 +122,30 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, Title model)
         {
             if (id != model.Id)
-                return NotFound("ID bulunamadı.");
+            {
+                TempData["ErrorMessage"] = "ID bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 400 }); 
+            }
 
             try
             {
                 if (!ModelState.IsValid)
                     return View(model);
 
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "Kullanıcı doğrulanamadı. Lütfen tekrar giriş yapınız.";
+                    return RedirectToAction("Error", "Home", new { code = 401 });
+                }
+
                 var existingTitle = await _context.Titles.FindAsync(id);
                 if (existingTitle == null || existingTitle.DeletedAt != null)
-                    return NotFound("Unvan bulunamadı.");
+                {
+                    TempData["ErrorMessage"] = "Unvan bulunamadı.";
+                    return RedirectToAction("Error", "Home", new { code = 404 });
+                }
 
                 // Duplicate check (except self)
                 bool duplicate = await _context.Titles
@@ -129,6 +160,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 //remove leading and trailing spaces
                 existingTitle.TitleName = model.TitleName.Trim();
                 existingTitle.ModifiedAt = DateTime.Now;
+                existingTitle.ModifiedById = user.Id;
 
                 _context.Titles.Update(existingTitle);
                 await _context.SaveChangesAsync();
@@ -152,20 +184,30 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return NotFound("ID bulunamadı.");
+                TempData["ErrorMessage"] = "ID bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 400 });
             }
+
             var title = await _context.Titles.FindAsync(id);
             if (title == null)
             {
-                return NotFound("Unvan bulunamadı.");
+                TempData["ErrorMessage"] = "Unvan bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 404 });
             }
+
 
             try
             {
                 var user = await _userManager.GetUserAsync(User);
 
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "Kullanıcı doğrulanamadı. Lütfen tekrar giriş yapınız.";
+                    return RedirectToAction("Error", "Home", new { code = 401 }); 
+                }
+
                 title.DeletedAt = DateTime.UtcNow;
-                //title.DeletedById = user.Id;
+                title.DeletedById = user.Id;
 
                 _context.Titles.Update(title);
 
@@ -175,8 +217,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-
-                return Json(new { Success = "false" });
+                TempData["ErrorMessage"] = "İşlem sırasında bir hata oluştu.";
+                return RedirectToAction("Error", "Home", new { code = 500 });
             }
 
         }

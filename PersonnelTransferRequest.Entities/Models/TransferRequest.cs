@@ -31,7 +31,7 @@ namespace PersonnelTransferRequest.Entities.Models
         public ICollection<TransferPreference>? Preferences { get; set; } = new List<TransferPreference>();
 
         [Required]
-        public string UserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
     }

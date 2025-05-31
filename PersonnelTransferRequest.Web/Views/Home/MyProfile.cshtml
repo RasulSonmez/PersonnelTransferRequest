@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewData["Title"] = "MyProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model ApplicationUser
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+
+<h2>@ViewData["Title"]</h2>
+<a class="btn btn-primary mb-4" href="/tayin-taleplerim">Tayin taleplerim</a>
+<div class="card p-3">
+    <dl class="row">
+        <dt class="col-sm-3">Sicil</dt>
+        <dd class="col-sm-9">@Model.RegistrationNumber</dd>
+
+        <dt class="col-sm-3">Unvan</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+
+        <dt class="col-sm-3">İsim</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Soyisim</dt>
+        <dd class="col-sm-9">@Model.Surname</dd>
+
+        <dt class="col-sm-3">TC Kimlik No</dt>
+        <dd class="col-sm-9">@Model.TCKN</dd>
+
+        <dt class="col-sm-3">Telefon</dt>
+        <dd class="col-sm-9">@Model.GSM</dd>
+
+        <dt class="col-sm-3">Görev Yeri</dt>
+        <dd class="col-sm-9">@Model.DutyStation</dd>
+
+        <dt class="col-sm-3">Profil Fotoğrafı</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.ProfilPhotoPath))
+            {
+                <img src="@Url.Content(Model.ProfilPhotoPath)" alt="Profil Fotoğrafı" width="150" />
+            }
+            else
+            {
+                <span><i class="bx bx-user-circle bx-md text-muted"></i></span>
+            }
+        </dd>
+    </dl>
+</div>
+

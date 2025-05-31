@@ -25,6 +25,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            //data comes from dynamic data table GetAllTitlesForDataTable
             return View();
         }
 
@@ -142,6 +143,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
 
                 //remove leading and trailing spaces
+                model.CreatedAt = DateTime.Now;               
                 model.UserName = model.RegistrationNumber?.Trim();
                 model.EmailConfirmed = true;
                 model.Email = $"{model.RegistrationNumber}@adalet.com"; // Adjust this if needed
@@ -180,11 +182,18 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id))
-                return NotFound("ID bulunamadı.");
+            {
+                TempData["ErrorMessage"] = "ID bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 400 });
+            }
 
             var user = await _userManager.FindByIdAsync(id);
             if (user == null || user.IsDelete)
-                return NotFound("Kullanıcı bulunamadı.");
+            {
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 404 });
+            }
+
 
             ViewData["Titles"] = new SelectList(_context.Titles
      .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
@@ -200,7 +209,10 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(string id, ApplicationUser model, string newPassword)
         {
             if (id != model.Id)
-                return NotFound("ID bulunamadı.");
+            {
+                TempData["ErrorMessage"] = "ID bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 400 });
+            }
 
             try
             {
@@ -214,8 +226,12 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 }
 
                 var user = await _userManager.FindByIdAsync(id);
+
                 if (user == null || user.IsDelete)
-                    return NotFound("Kullanıcı bulunmaadı");
+                {
+                    TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                    return RedirectToAction("Error", "Home", new { code = 404 });
+                }
 
 
                 //check null or empty for registrationnumber
@@ -386,7 +402,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             if (string.IsNullOrEmpty(id))
             {
-                return NotFound("ID bulunamadı.");
+                TempData["ErrorMessage"] = "ID bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 400 });
             }
 
             var user = await _userManager.Users
@@ -395,9 +412,11 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
             if (user == null)
             {
-                return NotFound("Kullanıcı bulunamadı.");
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 404 });
             }
-        
+
+
             return View(user);
         }
 
@@ -408,13 +427,17 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return NotFound("ID bulunamadı.");
+                TempData["ErrorMessage"] = "ID bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 400 });
             }
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                return NotFound("Kullanıcı bulunamadı.");
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 404 });
             }
+
 
             try
             {
@@ -439,8 +462,13 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         public async Task<IActionResult> AdminChangePassword()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return NotFound("Kullanıcı bulunamadı.");
+         
+            if (user == null || user.IsDelete)
+            {
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 404 });
+            }
+
 
             return View(new ChangePasswordViewModel { UserId = user.Id });
         }
@@ -454,8 +482,12 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 return View(model);
 
             var user = await _userManager.FindByIdAsync(model.UserId);
-            if (user == null)
-                return NotFound("Kullanıcı bulunamadı.");
+            if (user == null || user.IsDelete)
+            {
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                return RedirectToAction("Error", "Home", new { code = 404 });
+            }
+
 
             var changePassResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
 
@@ -469,7 +501,9 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             }
 
             await _signInManager.SignOutAsync();
+
             TempData["SuccessMessage"] = "Şifreniz başarıyla değiştirildi.";
+
             return RedirectToAction("Login", "Account", new { area = "Identity" });
 
         }

@@ -43,12 +43,12 @@ namespace PersonnelTransferRequest.Web.Controllers
 
             //Total count of transfer requests for the user
             var totalCount = await _context.TransferRequests
-                .Where(tr => tr.UserId == userId)
+                .Where(tr => tr.ApplicationUserId == userId)
                 .CountAsync();
 
             // If the page number is less than 1 or greater than the total pages, return a bad request
             var requests = await _context.TransferRequests
-                .Where(tr => tr.UserId == userId)
+                .Where(tr => tr.ApplicationUserId == userId)
                 .Include(tr => tr.Preferences.OrderBy(p => p.PriorityOrder))
                 .OrderByDescending(tr => tr.RequestDate)
                 .Skip((page - 1) * pageSize)
@@ -138,7 +138,7 @@ namespace PersonnelTransferRequest.Web.Controllers
                 RequestDate = DateTime.UtcNow,
                 RequestType = model.RequestType,
                 Status = TransferStatus.Pending,
-                UserId = userId,
+                ApplicationUserId = userId,
                 CreatedAt = DateTime.UtcNow,
                 CreatedById = userId,
                 Preferences = model.Preferences.Select(p => new TransferPreference

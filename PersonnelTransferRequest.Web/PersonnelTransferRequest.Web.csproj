@@ -22,8 +22,4 @@
     <ProjectReference Include="..\PersonnelTransferRequest.Entities\PersonnelTransferRequest.Entities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\upload\profilPhoto\" />
-  </ItemGroup>
-
 </Project>

@@ -19,7 +19,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
        
         /// Displays the main dashboard with personnel and transfer request statistics       
         /// <returns>Dashboard view with statistical data</returns>
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Check if database context or required tables are null to prevent null reference exceptions
             if (_context?.Users == null || _context?.TransferRequests == null || _context?.Titles == null)
@@ -30,22 +30,25 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             // Create view model with dashboard statistics
             var viewModel = new DashboardViewModel
             {
-                PersonnelCount = _context.Users.Count(),
+                PersonnelCount = await _context.Users.CountAsync(),
 
-                TransferRequestCount = _context.TransferRequests
-                    .Where(a => a.DeletedAt == null).Count(),
+                TransferRequestCount = await _context.TransferRequests
+              .Where(a => a.DeletedAt == null)
+              .CountAsync(),
 
-                TitleCount = _context.Titles
-                    .Where(a => a.DeletedAt == null).Count(),
-            
-                TransferRequests = _context.TransferRequests
-                    .Include(a => a.Preferences) 
-                    .Where(a => a.DeletedAt == null)  
-                    .OrderByDescending(a => a.CreatedAt)  
-                    .Take(5)  
-                    .ToList()  
+                TitleCount = await _context.Titles
+              .Where(a => a.DeletedAt == null)
+              .CountAsync(),
+
+                TransferRequests = await _context.TransferRequests
+              .Include(a => a.Preferences)
+              .Include(a => a.ApplicationUser)
+              .Where(a => a.DeletedAt == null)
+              .OrderByDescending(a => a.CreatedAt)
+              .Take(5)
+              .ToListAsync()
             };
-           
+
             return View(viewModel);
         }
 

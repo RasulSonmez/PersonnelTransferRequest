@@ -1,26 +1,27 @@
 ﻿
 @{
-    ViewData["Title"] = "Tüm personeller";
+    ViewData["Title"] = "Tayin Talepleri";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
     //colums for datatable dynamic
     var columns = new List<object>
-    {
-        new { data = "createdAt" },      
-        new { data = "name" },
-        new { data = "surname" },
-        new { data = "gsm" },
-        new { data = "registrationNumber" },
+{
+
+        new { data = "requestDate" },
+        new { data = "applicationUser_RegistrationNumber" },
+        new { data = "applicationUser_Name" },
+        new { data = "applicationUser_Surname" },
+        new { data = "applicationUser_Gsm" },
         new {
             data = (string?)null,
             isAction = true,
-            hasEdit = true,
+            hasEdit = false,
             hasDetails = true,
             hasDelete = true,
-            editUrl = "/Admin/ApplicationUser/Edit/",
-            detailsUrl = "/Admin/ApplicationUser/Details/",
-            deleteUrl = "/Admin/ApplicationUser/Delete/"
-        }
+            editUrl = "/Admin/TransferRequest/Edit/",
+            detailsUrl = "/Admin/TransferRequest/Details/",
+            deleteUrl = "/Admin/TransferRequest/Delete/"
+        } //actions
     };
 
     //columsJson Serialized
@@ -36,24 +37,21 @@
 
 
     <div class="card-body">
-        <div class="mb-4">
-            <a asp-action="Create" class="btn btn-primary text-white">Personel Ekle</a>
 
-        </div>
         <div class="table-responsive text-nowrap">
-            <table id="usersTable"
+            <table id="titleTable"
                    class="table table-striped"
-                   data-url="@Url.Action("GetAllUserForDataTable", "ApplicationUser")"
+                   data-url="@Url.Action("GetAllTransferRequestForDataTable", "TransferRequest")"
                    data-columns='@Html.Raw(columnsJson)'
                    style="width:100%">
                 <thead>
                     <tr>
 
-                        <th>Oluşturulma Tarihi</th>
+                        <th>Talep Tarihi</th>
+                        <th>Sicil</th>
                         <th>İsim</th>
                         <th>Soyisim</th>
-                        <th>Telefon</th>
-                        <th>Sicil No</th>
+                        <th>Telefon Numarası</th>
                         <th>İşlemler</th>
                     </tr>
                 </thead>
@@ -64,4 +62,4 @@
     </div>
 </div>
 
-@await Html.PartialAsync("_DataTableAjaxPartial", "usersTable")
+@await Html.PartialAsync("_DataTableAjaxPartial", "titleTable")

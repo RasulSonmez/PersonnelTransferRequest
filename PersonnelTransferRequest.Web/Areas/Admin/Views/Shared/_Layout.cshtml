@@ -56,7 +56,7 @@
  
 
     <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link href="~/adminAssets/vendor/libs/dataTable/dataTableBootstrap5.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -97,7 +97,7 @@
 
                     <!-- Transfer Persons  -->
                     <li class="menu-item">
-                        <a href="cards-basic.html" class="menu-link">
+                        <a href="/admin/transferRequest/index" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-building-house"></i>
                             <div data-i18n="Basic">Tayin Başvuruları</div>
                         </a>
@@ -255,8 +255,10 @@
     <script src="~/adminAssets/vendor/libs/select2/js/select2.min.js"></script>
 
     <!--dataTables-->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="~/adminAssets/vendor/libs/dataTable/jquery.dataTables.js"></script>
+    <script src="~/adminAssets/vendor/libs/dataTable/dataTables.bootstrap5.js"></script>
+
 
     <!--for active class-->
     <script>

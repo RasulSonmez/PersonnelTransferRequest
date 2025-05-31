@@ -1,26 +1,3 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
 
 /*
 * Select2
@@ -28,7 +5,7 @@ body {
 
 
 .select2-container--default .select2-selection--single {
-    height: 35.55px !important;
+    height: 30px !important;
     border: 1px solid #d9dee3 !important;
     color: #697a8d !important;
 }
@@ -37,3 +14,40 @@ body {
         line-height: 34px !important;
         color: #697a8d !important;
     }
+
+
+   /****Login*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+.login {
+    height: 100vh;
+    overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
+}
+
+.login-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: rgb(105, 108, 255);
+    background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#13787100 110.74%);
+}
+
+.custom-box-shadow {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.login-button-bg {
+    background: rgb(105, 108, 255) !important;
+    background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#13787100 110.74%) !important;
+    transition:300ms all ease-in;
+}
+
+    .login-button-bg:hover {
+        background: rgb(105, 108, 255) !important;
+        background: linear-gradient(113.99deg,#004187c2 35.1%,#02144a 99.74%,#02144ab3 110.74%) !important;
+    }
+

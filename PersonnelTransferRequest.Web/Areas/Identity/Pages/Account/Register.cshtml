@@ -2,188 +2,196 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Kayıt Ol";
+    Layout = null;
 }
 
+<html lang="tr"
+      class="light-style customizer-hide"
+      dir="ltr"
+      data-theme="theme-default"
+      data-assets-path="../assets/"
+      data-template="vertical-menu-template-free">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
+    <link rel="icon" type="image/png" href="~/images/uyap-logo.png">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
 
-<div class="row">
-    <div class="col-md-6">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
-            <h2>Yeni kullanıcı oluştur</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<body>
+    <!-- Content -->
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.RegistrationNumber" class="form-control" placeholder="Sicil No" />
-                <label asp-for="Input.RegistrationNumber">Sicil No</label>
-                <span asp-validation-for="Input.RegistrationNumber" class="text-danger"></span>
-            </div>
+    <div class="login">
+        <div class="row  h-100">
+            <div class="col-md-5 d-none d-md-block">
+                <div class="login-right custom-box-shadow">
+                    <div class="mb-4">
+                        <img class="img-fluid" width="200" src="~/images/uyap-logo.png" />
 
-            <div class="form-floating mb-3">
-                <select asp-for="Input.Title" asp-items="@ViewData["Titles"] as SelectList" class="form-select">
-                    <option value="">Unvan Seçiniz</option>
-                </select>
-                <label asp-for="Input.Title">Unvan</label>
-                <span asp-validation-for="Input.Title" class="text-danger"></span>
-            </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Name" class="form-control" placeholder="İsim" />
-                <label asp-for="Input.Name">İsim</label>
-                <span asp-validation-for="Input.Name" class="text-danger"></span>
-            </div>
+                    </div>
+                    <p class="text-white mb-3 fs-4">
+                        Personel Tayin Sistemine
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Surname" class="form-control" placeholder="Soyisim" />
-                <label asp-for="Input.Surname">Soyisim</label>
-                <span asp-validation-for="Input.Surname" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.TCKN" class="form-control" placeholder="TC Kimlik No" />
-                <label asp-for="Input.TCKN">TC Kimlik No</label>
-                <span asp-validation-for="Input.TCKN" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.GSM" class="form-control" placeholder="Telefon Numarası" />
-                <label asp-for="Input.GSM">Telefon Numarası</label>
-                <span asp-validation-for="Input.GSM" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <!--cities-->
-                <select asp-for="Input.DutyStation" class="form-select citiesSelect">
-                    <option value="Adana">Adana</option>
-                    <option value="Adıyaman">Adıyaman</option>
-                    <option value="Afyonkarahisar">Afyonkarahisar</option>
-                    <option value="Ağrı">Ağrı</option>
-                    <option value="Aksaray">Aksaray</option>
-                    <option value="Amasya">Amasya</option>
-                    <option value="Ankara">Ankara</option>
-                    <option value="Antalya">Antalya</option>
-                    <option value="Ardahan">Ardahan</option>
-                    <option value="Artvin">Artvin</option>
-                    <option value="Aydın">Aydın</option>
-                    <option value="Balıkesir">Balıkesir</option>
-                    <option value="Bartın">Bartın</option>
-                    <option value="Batman">Batman</option>
-                    <option value="Bayburt">Bayburt</option>
-                    <option value="Bilecik">Bilecik</option>
-                    <option value="Bingöl">Bingöl</option>
-                    <option value="Bitlis">Bitlis</option>
-                    <option value="Bolu">Bolu</option>
-                    <option value="Burdur">Burdur</option>
-                    <option value="Bursa">Bursa</option>
-                    <option value="Çanakkale">Çanakkale</option>
-                    <option value="Çankırı">Çankırı</option>
-                    <option value="Çorum">Çorum</option>
-                    <option value="Denizli">Denizli</option>
-                    <option value="Diyarbakır">Diyarbakır</option>
-                    <option value="Düzce">Düzce</option>
-                    <option value="Edirne">Edirne</option>
-                    <option value="Elazığ">Elazığ</option>
-                    <option value="Erzincan">Erzincan</option>
-                    <option value="Erzurum">Erzurum</option>
-                    <option value="Eskişehir">Eskişehir</option>
-                    <option value="Gaziantep">Gaziantep</option>
-                    <option value="Giresun">Giresun</option>
-                    <option value="Gümüşhane">Gümüşhane</option>
-                    <option value="Hakkari">Hakkari</option>
-                    <option value="Hatay">Hatay</option>
-                    <option value="Iğdır">Iğdır</option>
-                    <option value="Isparta">Isparta</option>
-                    <option value="İstanbul">İstanbul</option>
-                    <option value="İzmir">İzmir</option>
-                    <option value="Kahramanmaraş">Kahramanmaraş</option>
-                    <option value="Karabük">Karabük</option>
-                    <option value="Karaman">Karaman</option>
-                    <option value="Kars">Kars</option>
-                    <option value="Kastamonu">Kastamonu</option>
-                    <option value="Kayseri">Kayseri</option>
-                    <option value="Kilis">Kilis</option>
-                    <option value="Kırıkkale">Kırıkkale</option>
-                    <option value="Kırklareli">Kırklareli</option>
-                    <option value="Kırşehir">Kırşehir</option>
-                    <option value="Kocaeli">Kocaeli</option>
-                    <option value="Konya">Konya</option>
-                    <option value="Kütahya">Kütahya</option>
-                    <option value="Malatya">Malatya</option>
-                    <option value="Manisa">Manisa</option>
-                    <option value="Mardin">Mardin</option>
-                    <option value="Mersin">Mersin</option>
-                    <option value="Muğla">Muğla</option>
-                    <option value="Muş">Muş</option>
-                    <option value="Nevşehir">Nevşehir</option>
-                    <option value="Niğde">Niğde</option>
-                    <option value="Ordu">Ordu</option>
-                    <option value="Osmaniye">Osmaniye</option>
-                    <option value="Rize">Rize</option>
-                    <option value="Sakarya">Sakarya</option>
-                    <option value="Samsun">Samsun</option>
-                    <option value="Şanlıurfa">Şanlıurfa</option>
-                    <option value="Siirt">Siirt</option>
-                    <option value="Sinop">Sinop</option>
-                    <option value="Sivas">Sivas</option>
-                    <option value="Şırnak">Şırnak</option>
-                    <option value="Tekirdağ">Tekirdağ</option>
-                    <option value="Tokat">Tokat</option>
-                    <option value="Trabzon">Trabzon</option>
-                    <option value="Tunceli">Tunceli</option>
-                    <option value="Uşak">Uşak</option>
-                    <option value="Van">Van</option>
-                    <option value="Yalova">Yalova</option>
-                    <option value="Yozgat">Yozgat</option>
-                    <option value="Zonguldak">Zonguldak</option>
-                </select>
-
-                <label asp-for="Input.DutyStation">Görev Yeri</label>
-                <span asp-validation-for="Input.DutyStation" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" placeholder="Email (Opsiyonel)" />
-                <label asp-for="Input.Email">Email (Opsiyonel)</label>
+                    </p>
+                    <p class="text-white fs-3">
+                        Hoşgeldiniz!
+                    </p>
+                    <div>
+                        <a class="btn btn-outline-light" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Giriş Yap</a>
+                    </div>
+                </div>
 
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Şifre" />
-                <label asp-for="Input.Password">Şifre</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Şifreyi Onayla" />
-                <label asp-for="Input.ConfirmPassword">Şifreyi Onayla</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
+            <div class="col-md-7 d-flex align-items-center justify-content-center">
+                <section class="px-5">
+                    <div class="my-4 d-block d-md-none justify-content-center text-center">
+                        <img class="img-fluid" width="100" src="~/images/uyap-logo.png" />
+                        <p class="text-dark fw-bolder mb-3 fs-5">
+                            Personel Tayin Sistemine
+                        </p>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Input.ProfilPhotoFile" class="fw-bolder mb-2">Profile Fotoğrafı</label>
-                <input asp-for="Input.ProfilPhotoFile" type="file" class="form-control" />
-                <span asp-validation-for="Input.ProfilPhotoFile" class="text-danger fs-tiny"></span>
+                    <div class="text-center">
+                        <h2>Hoşgeldiniz 👋</h2>
+                        <h4>@ViewData["Title"]</h4>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <span class="small text-muted">Lütfen bilgilerin doğruluğundan emin olunuz!</span>
+                    </div>
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                     
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="row row-cols-1 row-cols-md-2">
+                            <div class="col mb-3">
+                                <label asp-for="Input.RegistrationNumber" class="fw-bolder mb-2">Sicil No</label>
+                                <input asp-for="Input.RegistrationNumber" class="form-control" placeholder="Sicil No" />
+
+                                <span asp-validation-for="Input.RegistrationNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.Title" class="fw-bolder mb-2">Unvan</label>
+
+                                <select asp-for="Input.Title" asp-items="@ViewData["Titles"] as SelectList" class="form-select">
+                                    <option value="">Unvan Seçiniz</option>
+                                </select>
+
+                                <span asp-validation-for="Input.Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.Name" class="fw-bolder mb-2">İsim</label>
+
+                                <input asp-for="Input.Name" class="form-control" placeholder="İsim" />
+
+                                <span asp-validation-for="Input.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.Surname" class="fw-bolder mb-2">Soyisim</label>
+
+                                <input asp-for="Input.Surname" class="form-control" placeholder="Soyisim" />
+
+                                <span asp-validation-for="Input.Surname" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.TCKN" class="fw-bolder mb-2">TC Kimlik No</label>
+                                <input asp-for="Input.TCKN" class="form-control" placeholder="TC Kimlik No" />
+
+                                <span asp-validation-for="Input.TCKN" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.GSM" class="fw-bolder mb-2">Telefon Numarası</label>
+                                <input asp-for="Input.GSM" class="form-control" placeholder="Telefon Numarası" />
+
+                                <span asp-validation-for="Input.GSM" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.DutyStation" class="fw-bolder mb-2">Görev Yeri</label>
+
+                                <select asp-for="Input.DutyStation" class="form-select citiesSelect">
+                                    <!--option come from cities.js-->
+                                </select>
+
+
+                                <span asp-validation-for="Input.DutyStation" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.Email" class="fw-bolder mb-2">Email (Şifre işlemleri için gerekli)</label>
+
+                                <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.Password" class="fw-bolder mb-2">Şifre</label>
+                                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Şifre" />
+
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.ConfirmPassword" class="fw-bolder mb-2">Şifreyi Tekrar</label>
+                                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Şifreyi Onayla" />
+
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="col mb-3">
+                                <label asp-for="Input.ProfilPhotoFile" class="fw-bolder mb-2">Profile Fotoğrafı</label>
+                                <input asp-for="Input.ProfilPhotoFile" type="file" class="form-control" />
+                                <span asp-validation-for="Input.ProfilPhotoFile" class="text-danger fs-tiny"></span>
+                            </div>
+
+                        </div>
+                    
+
+                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Kayıt Ol</button>
+                    </form>
+                </section>
             </div>
 
 
 
+        </div>
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Kayıt Ol</button>
-        </form>
+
     </div>
-</div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--cities-->
+    <script src="~/js/cities.js"></script>
 
-    <!--Select2-->
-    <script>
-        $(document).ready(function () {
-            $('.citiesSelect').select2();
-        });
-    </script>
-}
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+
+        <!--Select2-->
+        <script>
+            $(document).ready(function () {
+                const $select = $('.citiesSelect');
+                $select.empty(); // önce içeriği temizle
+                citiesArray.forEach(city => {
+                    $select.append(new Option(city === "" ? "İl Seçiniz" : city, city));
+                });
+
+                $select.select2();
+            });
+        </script>
+    }
+
+
+</body>
+</html>
+

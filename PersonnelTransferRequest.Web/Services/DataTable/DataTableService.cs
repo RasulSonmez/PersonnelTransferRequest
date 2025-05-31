@@ -21,7 +21,7 @@ namespace PersonnelTransferRequest.Web.Services.DataTable
                 recordsTotal = await Task.FromResult(query.Count())
             };
 
-            // Search
+           
             // Search
             if (!string.IsNullOrEmpty(model.search?.value))
             {
@@ -39,7 +39,7 @@ namespace PersonnelTransferRequest.Web.Services.DataTable
             if (model.order != null && model.order.Any())
             {
                 var sortColumn = model.columns[model.order[0].column].data;
-                var sortAsc = model.order[0].dir == "asc";
+                var sortAsc = model.order[0].dir == "desc";
 
                 query = query.OrderByDynamic(sortColumn, sortAsc);
             }

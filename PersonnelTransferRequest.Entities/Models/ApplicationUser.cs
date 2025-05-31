@@ -56,7 +56,9 @@ namespace PersonnelTransferRequest.Entities.Models
         [Display(Name = "Fotoğraf")]
         public string? ProfilPhotoPath { get; set; }
 
-
+        [Display(Name = "Oluşturulma Tarihi")]
+        [DataType(DataType.DateTime)]
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public bool IsDelete { get; set; }
 
         //Not mapped
