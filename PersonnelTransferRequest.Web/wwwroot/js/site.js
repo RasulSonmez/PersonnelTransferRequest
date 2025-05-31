@@ -126,4 +126,3 @@ function initializeSelect2() {
 }
 
 
-

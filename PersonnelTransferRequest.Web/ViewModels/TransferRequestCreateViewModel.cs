@@ -21,7 +21,7 @@ namespace PersonnelTransferRequest.Web.ViewModels
     public class TransferPreferenceViewModel
     {
 
-        [Required(ErrorMessage = "Tercih edilen adalet sarayı alanı zorunlu alandır")]
+        [Required(ErrorMessage = "Lütfen bir adalet sarayı tercih ediniz.")]
         [Display(Name = "Tercih Edilen Adalet Sarayı")]
         public string CourtHouse { get; set; }
 

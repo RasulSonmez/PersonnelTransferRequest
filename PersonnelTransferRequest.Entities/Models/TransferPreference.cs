@@ -11,7 +11,7 @@ namespace PersonnelTransferRequest.Entities.Models
     {
 
 
-        [Required(ErrorMessage = "Tercih edilen adalet sarayı alanı zorunlu alandır")]
+        [Required(ErrorMessage = "Lütfen bir adalet sarayı tercih ediniz")]
         [Display(Name = "Tercih Edilen Adalet Sarayı")]
         public string CourtHouse { get; set; }
 

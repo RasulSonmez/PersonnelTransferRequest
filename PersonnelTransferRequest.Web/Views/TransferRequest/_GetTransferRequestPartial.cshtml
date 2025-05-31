@@ -51,6 +51,7 @@
                     <div class="form-group mb-3">
                         <label asp-for="Description" class="form-label"></label>
                         <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <small id="charCount" class="form-text text-muted">Kalan karakter: 5000</small>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
@@ -122,4 +123,15 @@
             refreshSelectOptions();
         });
     });
+
+    // count char for Description textarea
+    $(document).ready(function () {
+        const maxLength = 5000;
+        $('#Description').on('input', function () {
+            let currentLength = $(this).val().length;
+            let remaining = maxLength - currentLength;
+            $('#charCount').text('Kalan karakter: ' + remaining);
+        });
+    });
+
 </script>

@@ -25,13 +25,12 @@ namespace PersonnelTransferRequest.Web.Controllers
         //action method to display the list of transfer requests for the logged-in user
         [HttpGet]
         [Route("tayin-taleplerim")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             //Check if the user is authenticated
             if (!User.Identity.IsAuthenticated)
                 return Forbid("Yetkisiz erişim.");
 
-            //Get the user ID of the logged-in user
             var userId = _userManager.GetUserId(User);
 
             if (string.IsNullOrEmpty(userId))
@@ -39,21 +38,35 @@ namespace PersonnelTransferRequest.Web.Controllers
 
             var user = await _userManager.FindByIdAsync(userId);
 
-            //If the user ID is null or empty, return a forbidden response
-            if (string.IsNullOrEmpty(userId))
-                return Forbid("Kullanıcı bilgisi alınamadı.");
-
             if (user == null || user.IsDelete)
                 return NotFound("Kullanıcı bulunamadı.");
 
+            //Total count of transfer requests for the user
+            var totalCount = await _context.TransferRequests
+                .Where(tr => tr.UserId == userId)
+                .CountAsync();
+
+            // If the page number is less than 1 or greater than the total pages, return a bad request
             var requests = await _context.TransferRequests
                 .Where(tr => tr.UserId == userId)
                 .Include(tr => tr.Preferences.OrderBy(p => p.PriorityOrder))
                 .OrderByDescending(tr => tr.RequestDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            return View(requests);
+            //using model to pass data to the view
+            var model = new TransferRequestListViewModel
+            {
+                Requests = requests,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
+
+            return View(model);
         }
+
 
         //action method to display the form for creating a new transfer request
         public IActionResult _GetTransferRequestPartial()

@@ -217,6 +217,34 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 if (user == null || user.IsDelete)
                     return NotFound("Kullanıcı bulunmaadı");
 
+
+                //check null or empty for registrationnumber
+                if (string.IsNullOrEmpty(model.RegistrationNumber))
+                {
+                    ModelState.AddModelError("RegistrationNumber", "Sicil numarası boş olamaz!");
+
+                    ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
+                    return View(model);
+                }
+
+
+                // If trying to change RegistrationNumber, keep the old value
+                if (user.RegistrationNumber != model.RegistrationNumber)
+                {
+                    ModelState.AddModelError("RegistrationNumber", "Sicil numarası değiştirilemez!");
+
+                    ViewData["Titles"] = new SelectList(_context.Titles
+                        .Where(t => t.DeletedAt == null && !string.IsNullOrEmpty(t.TitleName))
+                        .OrderByDescending(t => t.CreatedAt), "TitleName", "TitleName");
+
+                    return View(model);
+                }
+
+              
+
                 // Check for existing user with the same TCKN (exclude current user)
                 if (!string.IsNullOrEmpty(model.TCKN))
                 {
