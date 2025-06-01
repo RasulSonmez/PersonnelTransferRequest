@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +12,28 @@ using PersonnelTransferRequest.Web.ViewModels.DataTable;
 
 namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 {
-   
-    public class ApplicationUserController : AdminBaseController
+    [Area("Admin")]
+    public class ApplicationUserController : Controller
     {
-     
 
-       public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IDataTableService dataTableService, SignInManager<ApplicationUser> signInManager)
-        :  base(context, userManager, dataTableService, signInManager)
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IDataTableService _dataTableService;
+
+        public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IDataTableService dataTableService)
         {
+            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+            _dataTableService = dataTableService;
         }
 
+
         //Action method to list all users
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Index()
         {
@@ -30,13 +42,14 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         }
 
         //Action method to load user data for DataTable
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetAllUserForDataTable(DataTableAjaxPostModel model)
         {
             try
             {
-                var query = _context.Users.Where(u => !u.IsDelete);
+                var query = _context.Users.Where(u => !u.IsDelete && u.IsAdmin == false);
                 var result = await _dataTableService.GetResultAsync(query, model);
                 return Json(result);
             }
@@ -47,6 +60,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         }
 
         //Action method to show create user form
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
         public IActionResult Create()
         {
             ViewData["Titles"] = new SelectList(_context.Titles
@@ -58,6 +73,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
 
         //Action method to show create user form
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ApplicationUser model, string password)
@@ -179,6 +195,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
         //Action method to show edit user form
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -204,6 +221,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         }
 
         //Action method to handle edit user form submission
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, ApplicationUser model, string newPassword)
@@ -398,6 +416,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
 
         //Action method to show user details
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -422,6 +441,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
 
         //Action method to delete a user
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(string? id)
         {
@@ -456,8 +476,135 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
         }
 
+        //Action method to register a new admin
+        [Route("adminRegister")]
+        [HttpGet]
+        public IActionResult AdminRegister()
+        {
+            // If there is already an admin, registration is disabled
+            if (_context.Users.Any(u => u.IsAdmin))
+            {              
+                return RedirectToAction("adminLogin");
+            }
+
+            return View();
+        }
+
+        //Action method to handle admin registration form submission
+        [Route("adminRegister")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdminRegister(AdminRegisterViewModel model)
+        {
+            if (_context.Users.Any(u => u.IsAdmin))
+            {
+                TempData["ErrorMessage"] = "Sistemde zaten bir admin kaydı var.";
+                return RedirectToAction("Login");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                IsAdmin = true,
+                EmailConfirmed = true,
+
+                //dummy data for register
+                RegistrationNumber = "ADM0001",
+                Title = "Bilgi İşlem Müdürü",
+                Name = "Admin",
+                Surname = "Kullanıcı",
+                TCKN = "12345678901", 
+                GSM = "5551234567",   
+                DutyStation = "Merkez",
+                CreatedAt = DateTime.Now,
+                IsDelete = false,
+                ProfilPhotoPath = null 
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            // If the user is created successfully, assign the Admin role
+            if (result.Succeeded)
+            {
+                //If the Admin role does not exist in the database, create it.
+                const string adminRoleName = "Admin";
+                if (!await _roleManager.RoleExistsAsync(adminRoleName))
+                {
+                    var roleResult = await _roleManager.CreateAsync(new IdentityRole(adminRoleName));
+                    if (!roleResult.Succeeded)
+                    {
+                        // If the role cannot be created, the user may be deleted or an error may be shown
+                        ModelState.AddModelError("", "Admin rolü oluşturulamadı.");
+                        return View(model);
+                    }
+                }
+
+                //Assign Admin role to user
+                await _userManager.AddToRoleAsync(user, adminRoleName);
+               
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("AdminLogin", "ApplicationUser", new { area = "Admin" });
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        //Action method to show login form
+        [Route("adminLogin")]
+        [HttpGet]
+        public IActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        //Action method to handle login form submission
+        [Route("adminLogin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdminLogin(AdminLoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null || !user.IsAdmin)
+            {
+                ModelState.AddModelError(string.Empty, "Geçersiz email adresi veya şifre.");
+                return View(model);
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                //check admin role
+                if (!await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    await _userManager.AddToRoleAsync(user, "Admin");
+                }
+
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+            }
+
+
+            ModelState.AddModelError(string.Empty, "Geçersiz email adresi veya şifre.");
+            return View(model);
+        }
 
         //Action method to change user password
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> AdminChangePassword()
         {
@@ -474,6 +621,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         }
 
         //Action method to handle password change form submission
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminChangePassword(ChangePasswordViewModel model)

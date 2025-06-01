@@ -61,6 +61,8 @@ namespace PersonnelTransferRequest.Entities.Models
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public bool IsDelete { get; set; }
 
+        public bool IsAdmin { get; set; }
+
         //Not mapped
         [NotMapped]
         [Display(Name = "Fotoğraf")]
