@@ -9,43 +9,66 @@
     ViewData["Title"] = "Profilim";
 }
 
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6 col-xl-4">
+        <div class="card border-0 custom-box-shadow">
 
-<h2>@ViewData["Title"]</h2>
-<a class="btn btn-primary mb-4" href="/tayin-taleplerim">Tayin taleplerim</a>
-<div class="card p-3">
-    <dl class="row">
-        <dt class="col-sm-3">Sicil</dt>
-        <dd class="col-sm-9">@Model.RegistrationNumber</dd>
+            <div class="card-header bg-first text-white py-3 d-flex align-items-center">
+                <h4 class="fw-bolder mt-2">@ViewData["Title"]</h4>
+            </div>
+          
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-4">
+                        @if (!string.IsNullOrEmpty(Model.ProfilPhotoPath))
+                        {
+                            <div class="d-flex justify-content-center">
+                                <img class="rounded-2" src="@Model.ProfilPhotoPath" alt="Profil Fotoğrafı" width="150" />
+                            </div>
 
-        <dt class="col-sm-3">Unvan</dt>
-        <dd class="col-sm-9">@Model.Title</dd>
+                        }
+                        else
+                        {
+                            <span><i class="bx bx-user-circle bx-md text-muted"></i></span>
+                        }
+                    </li>
+                    <li class="mb-2">
+                        <span class="fw-bolder">Sicil:</span>
+                        <span>@Model.RegistrationNumber</span>
+                    </li>
 
-        <dt class="col-sm-3">İsim</dt>
-        <dd class="col-sm-9">@Model.Name</dd>
+                    <li class="mb-2">
+                        <span class="fw-bolder">Unvan:</span>
+                        <span>@Model.Title</span>
+                    </li>
 
-        <dt class="col-sm-3">Soyisim</dt>
-        <dd class="col-sm-9">@Model.Surname</dd>
+                    <li class="mb-2">
+                        <span class="fw-bolder">İsim Soyisim:</span>
+                        <span class="text-capitalize">@Model.Name @Model.Surname</span>
+                    </li>
 
-        <dt class="col-sm-3">TC Kimlik No</dt>
-        <dd class="col-sm-9">@Model.TCKN</dd>
+                 
+                    <li class="mb-2">
+                        <span class="fw-bolder">TCKN:</span>
+                        <span>@Model.TCKN</span>
+                    </li>
 
-        <dt class="col-sm-3">Telefon</dt>
-        <dd class="col-sm-9">@Model.GSM</dd>
-
-        <dt class="col-sm-3">Görev Yeri</dt>
-        <dd class="col-sm-9">@Model.DutyStation</dd>
-
-        <dt class="col-sm-3">Fotoğraf</dt>
-        <dd class="col-sm-9">
-            @if (!string.IsNullOrEmpty(Model.ProfilPhotoPath))
-            {
-                <img src="@Url.Content(Model.ProfilPhotoPath)" alt="Profil Fotoğrafı" width="150" />
-            }
-            else
-            {
-                <span><i class="bx bx-user-circle bx-md text-muted"></i></span>
-            }
-        </dd>
-    </dl>
+                    <li class="mb-2">
+                        <span class="fw-bolder">GSM:</span>
+                        <span>@Model.GSM</span>
+                    </li>
+                    <li class="mb-2">
+                        <span class="fw-bolder">Görevli olduğu adliye:</span>
+                        <span>@Model.DutyStation</span>
+                    </li>
+                    <li class="mb-2">
+                        <span class="fw-bolder">Email:</span>
+                        <span>@Model.Email</span>
+                    </li>
+                  
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 

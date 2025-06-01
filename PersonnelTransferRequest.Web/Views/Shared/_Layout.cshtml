@@ -22,24 +22,24 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-navbar border-bottom box-shadow mb-3 py-4">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-navbar shadow-lg border-bottom  mb-3 py-3">
             <div class="container">
                 <div class="d-flex align-items-center">
                     <img width="60" height="60" src="~/images/uyap-logo.png" />
-                    <a class="navbar-brand text-white fw-bold text-center" asp-area="" asp-controller="Home" asp-action="Index">Personel Tayin Sistemi</a>
+                    <a class="navbar-brand text-white fw-bold text-center ms-2" asp-area="" asp-controller="Home" asp-action="Index">Personel Tayin Sistemi</a>
                 </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <i class="bx bx-grid-alt text-white bx-md"></i>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex align-content-center justify-content-between">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center">
                         <li class="nav-item me-2">
-                            <a class="nav-link" href="/profil">Profil</a>
+                            <a class="nav-link text-nowrap" href="/profil">Profil</a>
                         </li>
 
                         <li class="nav-item me-2">
-                            <a class="nav-link" href="/tayin-taleplerim">Tayin Taleplerim</a>
+                            <a class="nav-link text-nowrap" href="/tayin-taleplerim">Tayin Taleplerim</a>
                         </li>
 
 
@@ -56,9 +56,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top py-4">
         <div class="container">
-            &copy; 2025 - Personel Tayin Sistemi- <a href="https://rasulsonmez.com/" target="_blank">Rasul Sönmez</a>
+            &copy; @DateTime.Now.Year - Personel Tayin Sistemi - <a class="fw-bolder text-dark " href="https://rasulsonmez.com/" target="_blank">Rasul Sönmez</a>
         </div>
     </footer>
     <!--jQuery-->

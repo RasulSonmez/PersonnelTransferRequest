@@ -1,8 +1,22 @@
+/**Common class*/
+.bg-first {
+    background: rgb(105, 108, 255) !important;
+    background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#13787100 110.74%) !important;
+}
 
-/*
-* Select2
-******************************************************************************/
+/*Scroll Bar */
+::-webkit-scrollbar {
+    width: .3rem;
+    border-radius: .5rem;
+    background-color: #ddd;
+}
 
+::-webkit-scrollbar-thumb {
+    background-color: #212529;
+    border-radius: .5rem;
+}
+
+/** Select2***************/
 
 .select2-container--default .select2-selection--single {
     height: 33px !important;
@@ -32,8 +46,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    background: rgb(105, 108, 255);
+    height: 100%;  
     background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#13787100 110.74%);
 }
 
@@ -41,15 +54,14 @@
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-.auth-button-bg {
-    background: rgb(105, 108, 255) !important;
+.auth-button-bg {   
     background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#13787100 110.74%) !important;
     transition:300ms all ease-in;
 }
 
     .auth-button-bg:hover {
         background: rgb(105, 108, 255) !important;
-        background: linear-gradient(113.99deg,#004187c2 35.1%,#02144a 99.74%,#02144ab3 110.74%) !important;
+        background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#02144ab3 110.74%) !important;
     }
 
     .form-control,
@@ -82,9 +94,8 @@ body {
     font-family: "Montserrat", sans-serif;
 }
 
-.bg-navbar {
-    background: rgb(105, 108, 255) !important;
-    background: linear-gradient(113.99deg,#004187c2 35.1%,#02144a 99.74%,#02144ab3 110.74%) !important;
+.bg-navbar { 
+    background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#13787100 110.74%) !important;
 }
 
 .nav-link{
@@ -101,4 +112,24 @@ body {
 .navbar-light .navbar-nav .nav-link.active {
     background-color: rgba(255,255,255,.2);
     border-radius: .5rem;
+}
+
+.dropdown-toggle::after {
+   color:#ffff!important;
+}
+
+.dropdown-menu{
+    border:none !important;
+}
+
+/*dropdown mobil background*/
+@media (max-width: 576px) {
+    .profile-dropdown .dropdown-menu {
+        background-color: transparent !important;
+        color: #ffff !important;
+    }
+
+    .profile-dropdown .profil-text {      
+        color: #ffff !important;
+    }
 }

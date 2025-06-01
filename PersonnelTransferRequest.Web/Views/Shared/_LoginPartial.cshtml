@@ -4,27 +4,60 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <li class="nav-item me-2">
-            <a class="nav-link">Hoşgeldiniz @User.Identity?.Name!</a>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link fs-14-px"> <i class="bx bx-log-out"></i> Çıkış Yap</button>
-            </form>
-        </li>
+@{
+    string userName = null;
+    string userPhoto = null;
 
-
-    }
-    else
+    if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Kayıt Ol</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Giriş Yap</a>
-        </li>
+        var currentUser = await UserManager.GetUserAsync(User);
+        userName = currentUser?.Name ?? "Kullanıcı";
+        userPhoto = currentUser?.ProfilPhotoPath;
     }
-</ul>
+
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <div class="dropdown profile-dropdown">
+            <div class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @if (!string.IsNullOrEmpty(userPhoto))
+                {
+                    <img class="rounded-circle" src="@userPhoto" alt="Profil Fotoğrafı" width="30" height="30" />
+                }
+                else
+                {
+                    <i class="bx bx-user-circle bx-md text-muted"></i>
+                }
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end custom-box-shadow">
+                <li class="text-center">
+                    <span class="dropdown-item text-nowrap fs-12-px fw-bold profil-text">Hoşgeldin</span>
+                    <div>
+                        <span class="text-capitalize fs-12-px fw-bolder"> @userName</span>
+                    </div>
+                   
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form class="form-inline dropdown-item d-flex justify-content-center" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="btn btn-link fs-12-px text-nowrap text-dark profil-text">
+                            <i class="bx bx-log-out"></i> Çıkış Yap
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </li>
+
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Kayıt Ol</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Giriş Yap</a>
+    </li>
+}

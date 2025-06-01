@@ -68,14 +68,13 @@ function createPreferenceCard(index) {
         <div class="card p-3 mb-2 position-relative">
             <input type="hidden" name="Preferences[${index}].PriorityOrder" value="${index + 1}" />
             <div class="form-group mb-2">
-                <label class="form-label preference-label">Adalet Sarayı (Tercih ${index + 1})</label>
+                <label class="fw-bolder fs-14-px">Adalet Sarayı (Tercih ${index + 1})</label>
                 <select name="Preferences[${index}].CourtHouse" class="form-select select2Preference">
                     ${optionsCities}
                 </select>
                 <span asp-validation-for="Preferences[${index}].CourtHouse" class="text-danger"></span>
             </div>
-            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 remove-btn">
-                <i class="bi bi-dash-lg"></i>
+            <button type="button" class="btn-close btn-sm position-absolute top-0 end-0 m-2 remove-btn fs-12-px">             
             </button>
         </div>
     `;
