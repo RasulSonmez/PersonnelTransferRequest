@@ -5,7 +5,7 @@
 
 
 .select2-container--default .select2-selection--single {
-    height: 30px !important;
+    height: 33px !important;
     border: 1px solid #d9dee3 !important;
     color: #697a8d !important;
 }
@@ -14,16 +14,17 @@
         line-height: 34px !important;
         color: #697a8d !important;
     }
-
-
-   /****Login*/
+.select2-selection__rendered{
+    font-size:13px !important;
+}
+/****Login*/
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 
 .login {
     height: 100vh;
     overflow-x: hidden;
-    font-family: "Montserrat", sans-serif;
+  
 }
 
 .login-right {
@@ -40,14 +41,64 @@
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-.login-button-bg {
+.auth-button-bg {
     background: rgb(105, 108, 255) !important;
     background: linear-gradient(113.99deg,#004187 35.1%,#02144a 99.74%,#13787100 110.74%) !important;
     transition:300ms all ease-in;
 }
 
-    .login-button-bg:hover {
+    .auth-button-bg:hover {
         background: rgb(105, 108, 255) !important;
         background: linear-gradient(113.99deg,#004187c2 35.1%,#02144a 99.74%,#02144ab3 110.74%) !important;
     }
 
+    .form-control,
+    .form-select{      
+        font-size:13px !important;
+       
+    }
+
+.form-control::placeholder {
+   font-size:13px !important;
+   font-weight:400;
+}
+
+.fs-14-px{
+    font-size:14px;
+}
+
+.fs-12-px{
+    font-size:12px !important; 
+}
+
+.form-control:focus {
+    border-color: #02144a !important;
+    box-shadow: none !important;
+}
+
+/*****************Navbar*/
+body {
+    background-color: #f5f5f9;
+    font-family: "Montserrat", sans-serif;
+}
+
+.bg-navbar {
+    background: rgb(105, 108, 255) !important;
+    background: linear-gradient(113.99deg,#004187c2 35.1%,#02144a 99.74%,#02144ab3 110.74%) !important;
+}
+
+.nav-link{
+    color:#ffff !important;
+    font-size:14px !important;
+    transition:300ms all !important;
+}
+
+    .nav-link:hover {
+        background-color: rgba(255,255,255,.2);
+        border-radius:.5rem;
+    }
+
+.navbar-light .navbar-nav .nav-link.active {
+    background-color: rgba(255,255,255,.2);
+    border-radius: .5rem;
+}

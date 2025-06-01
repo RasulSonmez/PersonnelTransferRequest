@@ -22,27 +22,36 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-navbar border-bottom box-shadow mb-3 py-4">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Personel Tayin Sistemi</a>
+                <div class="d-flex align-items-center">
+                    <img width="60" height="60" src="~/images/uyap-logo.png" />
+                    <a class="navbar-brand text-white fw-bold text-center" asp-area="" asp-controller="Home" asp-action="Index">Personel Tayin Sistemi</a>
+                </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                    <i class="bx bx-grid-alt text-white bx-md"></i>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <div>
-                        <a href="/admin">Admin</a>
-                        <a href="/profil">Profil</a>
-                  
-                        <a href="/tayin-taleplerim">Tayin Taleplerim</a>
-                    </div>
-                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center">
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="/profil">Profil</a>
+                        </li>
+
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="/tayin-taleplerim">Tayin Taleplerim</a>
+                        </li>
+
+
+                        <partial name="_LoginPartial" />
+                    </ul>
+
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-5">
             @RenderBody()
         </main>
     </div>
@@ -52,8 +61,13 @@
             &copy; 2025 - Personel Tayin Sistemi- <a href="https://rasulsonmez.com/" target="_blank">Rasul Sönmez</a>
         </div>
     </footer>
+    <!--jQuery-->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!--Bootstrap js-->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--Custom js-->
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <!--cities-->
@@ -113,7 +127,20 @@
     }
 
     <!--For success and error message-->
+    <!--active class for navbar-->
+    <script>
+        $(function () {
+            var path = window.location.pathname.toLowerCase();
 
+            $('.navbar-nav .nav-link').each(function () {
+                var href = $(this).attr('href').toLowerCase();
+                if (path === href || path.startsWith(href)) {
+                    $('.navbar-nav .nav-link').removeClass('active');
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

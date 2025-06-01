@@ -129,7 +129,7 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Geçersiz giriş denemesi.");
+                    ModelState.AddModelError(string.Empty, "Geçersiz sicil numarası veya şifre.");
                 }
             }
 

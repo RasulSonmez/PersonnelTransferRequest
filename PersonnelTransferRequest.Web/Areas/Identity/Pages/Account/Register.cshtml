@@ -16,13 +16,25 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
+    <!--favico-->
     <link rel="icon" type="image/png" href="~/images/uyap-logo.png">
+
     <title>@ViewData["Title"]</title>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="~/adminAssets/vendor/fonts/boxicons.css" />
+
+    <!--Bootstrap-->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!--Select2-->
+    <link href="~/adminAssets/vendor/libs/select2/css/select2.min.css" rel="stylesheet" />
+
+    <!--Custom css-->
     <link href="~/css/site.css" rel="stylesheet" />
 </head>
 
-<body>
+<body style="background-color:#ffff !important;">
     <!-- Content -->
 
     <div class="login">
@@ -42,7 +54,7 @@
                         Hoşgeldiniz!
                     </p>
                     <div>
-                        <a class="btn btn-outline-light" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Giriş Yap</a>
+                        <a class="btn btn-outline-light" asp-page="./Login">Giriş Yap</a>
                     </div>
                 </div>
 
@@ -66,99 +78,108 @@
                         <span class="small text-muted">Lütfen bilgilerin doğruluğundan emin olunuz!</span>
                     </div>
                     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
-                     
+
                         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
                         <div class="row row-cols-1 row-cols-md-2">
                             <div class="col mb-3">
-                                <label asp-for="Input.RegistrationNumber" class="fw-bolder mb-2">Sicil No</label>
+                                <label asp-for="Input.RegistrationNumber" class="fw-bolder mb-2 fs-14-px">Sicil No</label>
                                 <input asp-for="Input.RegistrationNumber" class="form-control" placeholder="Sicil No" />
 
-                                <span asp-validation-for="Input.RegistrationNumber" class="text-danger"></span>
+                                <span asp-validation-for="Input.RegistrationNumber" class="text-danger fs-12-px"></span>
                             </div>
 
                             <div class="col mb-3">
-                                <label asp-for="Input.Title" class="fw-bolder mb-2">Unvan</label>
+                                <label asp-for="Input.Title" class="fw-bolder mb-2 fs-14-px">Unvan</label>
 
                                 <select asp-for="Input.Title" asp-items="@ViewData["Titles"] as SelectList" class="form-select">
                                     <option value="">Unvan Seçiniz</option>
                                 </select>
 
-                                <span asp-validation-for="Input.Title" class="text-danger"></span>
+                                <span asp-validation-for="Input.Title" class="text-danger fs-12-px"></span>
                             </div>
 
                             <div class="col mb-3">
-                                <label asp-for="Input.Name" class="fw-bolder mb-2">İsim</label>
+                                <label asp-for="Input.Name" class="fw-bolder mb-2 fs-14-px">İsim</label>
 
                                 <input asp-for="Input.Name" class="form-control" placeholder="İsim" />
 
-                                <span asp-validation-for="Input.Name" class="text-danger"></span>
+                                <span asp-validation-for="Input.Name" class="text-danger fs-12-px"></span>
                             </div>
 
                             <div class="col mb-3">
-                                <label asp-for="Input.Surname" class="fw-bolder mb-2">Soyisim</label>
+                                <label asp-for="Input.Surname" class="fw-bolder mb-2 fs-14-px">Soyisim</label>
 
                                 <input asp-for="Input.Surname" class="form-control" placeholder="Soyisim" />
 
-                                <span asp-validation-for="Input.Surname" class="text-danger"></span>
+                                <span asp-validation-for="Input.Surname" class="text-danger fs-12-px"></span>
                             </div>
 
                             <div class="col mb-3">
-                                <label asp-for="Input.TCKN" class="fw-bolder mb-2">TC Kimlik No</label>
+                                <label asp-for="Input.TCKN" class="fw-bolder mb-2 fs-14-px">TC Kimlik No</label>
                                 <input asp-for="Input.TCKN" class="form-control" placeholder="TC Kimlik No" />
 
-                                <span asp-validation-for="Input.TCKN" class="text-danger"></span>
+                                <span asp-validation-for="Input.TCKN" class="text-danger fs-12-px"></span>
                             </div>
 
                             <div class="col mb-3">
-                                <label asp-for="Input.GSM" class="fw-bolder mb-2">Telefon Numarası</label>
+                                <label asp-for="Input.GSM" class="fw-bolder mb-2 fs-14-px">Telefon Numarası</label>
                                 <input asp-for="Input.GSM" class="form-control" placeholder="Telefon Numarası" />
 
-                                <span asp-validation-for="Input.GSM" class="text-danger"></span>
+                                <span asp-validation-for="Input.GSM" class="text-danger fs-12-px"></span>
                             </div>
 
                             <div class="col mb-3">
-                                <label asp-for="Input.DutyStation" class="fw-bolder mb-2">Görev Yeri</label>
+                                <label asp-for="Input.DutyStation" class="fw-bolder mb-2 fs-14-px">Görev Yeri</label>
 
                                 <select asp-for="Input.DutyStation" class="form-select citiesSelect">
                                     <!--option come from cities.js-->
                                 </select>
 
 
-                                <span asp-validation-for="Input.DutyStation" class="text-danger"></span>
+                                <span asp-validation-for="Input.DutyStation" class="text-danger fs-12-px"></span>
                             </div>
 
                             <div class="col mb-3">
-                                <label asp-for="Input.Email" class="fw-bolder mb-2">Email (Şifre işlemleri için gerekli)</label>
+                                <label asp-for="Input.Email" class="fw-bolder mb-2 fs-14-px">Email (Şifre işlemleri için gerekli)</label>
 
                                 <input asp-for="Input.Email" class="form-control" placeholder="Email" />
-                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                <span asp-validation-for="Input.Email" class="text-danger fs-12-px"></span>
                             </div>
 
-                            <div class="col mb-3">
-                                <label asp-for="Input.Password" class="fw-bolder mb-2">Şifre</label>
-                                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Şifre" />
-
-                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            <div class="col mb-3 position-relative">
+                                <label asp-for="Input.Password" class="fw-bolder mb-2 fs-14-px">Şifre</label>
+                                <div class="input-group">
+                                    <input asp-for="Input.Password" id="password" class="form-control" autocomplete="new-password" placeholder="Şifre" />
+                                    <span class="input-group-text bg-transparent" id="toggle-password" style="cursor:pointer;">
+                                        <i class='bx bx-hide' id="toggle-icon-password"></i>
+                                    </span>
+                                </div>
+                                <span asp-validation-for="Input.Password" class="text-danger fs-12-px"></span>
                             </div>
 
-                            <div class="col mb-3">
-                                <label asp-for="Input.ConfirmPassword" class="fw-bolder mb-2">Şifreyi Tekrar</label>
-                                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Şifreyi Onayla" />
-
-                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            <div class="col mb-3 position-relative">
+                                <label asp-for="Input.ConfirmPassword" class="fw-bolder mb-2 fs-14-px">Şifreyi Tekrar</label>
+                                <div class="input-group">
+                                    <input asp-for="Input.ConfirmPassword" id="confirm-password" class="form-control" autocomplete="new-password" placeholder="Şifreyi Onayla" />
+                                    <span class="input-group-text bg-transparent" id="toggle-confirm-password" style="cursor:pointer;">
+                                        <i class='bx bx-hide' id="toggle-icon-confirm-password"></i>
+                                    </span>
+                                </div>
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger fs-12-px"></span>
                             </div>
 
+
                             <div class="col mb-3">
-                                <label asp-for="Input.ProfilPhotoFile" class="fw-bolder mb-2">Profile Fotoğrafı</label>
+                                <label asp-for="Input.ProfilPhotoFile" class="fw-bolder mb-2 fs-14-px">Fotoğraf</label>
                                 <input asp-for="Input.ProfilPhotoFile" type="file" class="form-control" />
-                                <span asp-validation-for="Input.ProfilPhotoFile" class="text-danger fs-tiny"></span>
+                                <span asp-validation-for="Input.ProfilPhotoFile" class="text-danger fs-12-px"></span>
                             </div>
 
                         </div>
-                    
 
-                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Kayıt Ol</button>
+
+                        <button id="registerSubmit" type="submit" class="w-100 btn auth-button-bg text-white">Kayıt Ol</button>
                     </form>
                 </section>
             </div>
@@ -170,27 +191,54 @@
 
     </div>
 
+    <!--jQuery-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!--Bootstrap js-->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--Select2-->
+    <script src="~/adminAssets/vendor/libs/select2/js/select2.min.js"></script>
+
     <!--cities-->
     <script src="~/js/cities.js"></script>
 
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
+    <!--custom js-->
+    <script src="~/js/site.js"></script>
 
-        <!--Select2-->
-        <script>
-            $(document).ready(function () {
-                const $select = $('.citiesSelect');
-                $select.empty(); // önce içeriği temizle
-                citiesArray.forEach(city => {
-                    $select.append(new Option(city === "" ? "İl Seçiniz" : city, city));
-                });
-
-                $select.select2();
+    <!--Select2 for cities select-->
+    <script>
+        $(document).ready(function () {
+            const $select = $('.citiesSelect');
+            $select.empty(); // önce içeriği temizle
+            citiesArray.forEach(city => {
+                $select.append(new Option(city === "" ? "İl Seçiniz" : city, city));
             });
-        </script>
-    }
 
+            $select.select2();
+        });
+    </script>
+
+    <!--show password function-->
+    <script>
+        $('#toggle-password').on('click', function () {
+            const input = $('#password');
+            const icon = $('#toggle-icon-password');
+            const type = input.attr('type') === 'password' ? 'text' : 'password';
+            input.attr('type', type);
+            icon.toggleClass('bx-show bx-hide');
+        });
+
+        $('#toggle-confirm-password').on('click', function () {
+            const input = $('#confirm-password');
+            const icon = $('#toggle-icon-confirm-password');
+            const type = input.attr('type') === 'password' ? 'text' : 'password';
+            input.attr('type', type);
+            icon.toggleClass('bx-show bx-hide');
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
 
 </body>
 </html>

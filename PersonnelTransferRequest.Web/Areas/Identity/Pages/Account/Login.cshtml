@@ -17,15 +17,27 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
+    <!--favico-->
     <link rel="icon" type="image/png" href="~/images/uyap-logo.png">
+
     <title>@ViewData["Title"]</title>
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="~/adminAssets/vendor/fonts/boxicons.css" />
+
+    <!--Bootstrap-->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!--Select2-->
+    <link href="~/adminAssets/vendor/libs/select2/css/select2.min.css" rel="stylesheet" />
+
+    <!--Custom css-->
     <link href="~/css/site.css" rel="stylesheet" />
 </head>
 
-<body>
+<body style="background-color:#ffff !important;">
     <!-- Content -->
-  
+
     <div class="login">
         <div class="row  h-100">
             <div class="col-md-7 d-flex align-items-center justify-content-center">
@@ -33,8 +45,7 @@
                     <div class="my-4 d-block d-md-none justify-content-center text-center">
                         <img class="img-fluid" width="100" src="~/images/uyap-logo.png" />
                         <p class="text-dark fw-bolder mb-3 fs-5">
-                            Personel Tayin Sistemine
-
+                            Personel Tayin Sistemi
                         </p>
 
                     </div>
@@ -43,33 +54,38 @@
                         <h2>Hoşgeldiniz 👋</h2>
                         <h4>@ViewData["Title"]</h4>
                     </div>
-                    <div class="mb-3 text-center">
-                        <span class="small text-muted">Lütfen Kullanıcı Bilgilerinizi Giriniz!</span>
+                    <div class="mb-4 text-center">
+                        <span class="fs-12-px text-muted">Lütfen Kullanıcı Bilgilerinizi Giriniz!</span>
                     </div>
                     <form id="account" method="post">
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger fs-12-px" role="alert"></div>
                         <div class="mb-3">
-                            <label asp-for="Input.RegistrationNumber" class="fw-bolder mb-2">Sicil Numaranız</label>
+                            <label asp-for="Input.RegistrationNumber" class="fw-bolder mb-2 fs-14-px">Sicil Numaranız</label>
                             <input asp-for="Input.RegistrationNumber" class="form-control" autocomplete="username" aria-required="true" placeholder="Sicil No" />
 
-                            <span asp-validation-for="Input.RegistrationNumber" class="text-danger"></span>
+                            <span asp-validation-for="Input.RegistrationNumber" class="text-danger fs-12-px"></span>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Input.Password" class="fw-bolder mb-2">Şifre</label>
-                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Şifre" />
-
-                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <div class="mb-3 position-relative">
+                            <label asp-for="Input.Password" class="fw-bolder mb-2 fs-14-px">Şifre</label>
+                            <div class="input-group">
+                                <input asp-for="Input.Password" class="form-control" id="password-input" autocomplete="current-password" aria-required="true" placeholder="Şifre" />
+                                <span class="input-group-text bg-transparent" id="toggle-password" style="cursor:pointer;">
+                                    <i class='bx bx-hide' id="toggle-icon"></i>
+                                </span>
+                            </div>
+                            <span asp-validation-for="Input.Password" class="text-danger fs-12-px"></span>
                         </div>
+
                         <div class="checkbox mb-3">
-                            <label asp-for="Input.RememberMe" class="form-label">
+                            <label asp-for="Input.RememberMe" class="form-label fs-14-px">
                                 <input class="form-check-input" asp-for="Input.RememberMe" />
                                 Beni Hatırla
                             </label>
                         </div>
                         <div class="mb-3">
-                            <button id="login-submit" type="submit" class="w-100 btn btn-lg login-button-bg text-white">Giriş yap</button>
+                            <button id="login-submit" type="submit" class="w-100 btn auth-button-bg text-white">Giriş yap</button>
                         </div>
                         <div class="d-flex justify-content-end">
                             <a class="text-muted" id="forgot-password" asp-page="./ForgotPassword">
@@ -88,11 +104,11 @@
                     <div class="mb-4">
                         <img class="img-fluid" width="200" src="~/images/uyap-logo.png" />
 
-                        
+
                     </div>
                     <p class="text-white mb-3 fs-4">
                         Personel Tayin Sistemine
-                      
+
                     </p>
                     <p class="text-white fs-3">
                         Hoşgeldiniz!
@@ -101,19 +117,34 @@
                         <a class="btn btn-outline-light" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Kayıt ol</a>
                     </div>
                 </div>
-           
+
             </div>
 
         </div>
 
 
     </div>
-   
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--jQuery-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <!--Bootstrap-->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--custom js-->
+    <script src="~/js/site.js"></script>
+
+
+    <script>
+        $('#toggle-password').on('click', function () {
+            const passwordInput = $('#password-input');
+            const icon = $('#toggle-icon');
+            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            icon.toggleClass('bx-show bx-hide');
+        });
+    </script>
+  
+
+    <partial name="_ValidationScriptsPartial" />
 
 </body>
 </html>
