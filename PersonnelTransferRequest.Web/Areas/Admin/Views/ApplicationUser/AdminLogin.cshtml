@@ -44,6 +44,8 @@
     <link rel="stylesheet" href="~/adminAssets/vendor/css/pages/page-auth.css" />
     <!-- Helpers -->
     <script src="~/adminAssets/vendor/js/helpers.js"></script>
+    <!--sweetalert2 Css-->
+    <link href="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.css" rel="stylesheet" />
 
     <script src="~/adminAssets/js/config.js"></script>
 
@@ -109,7 +111,7 @@
                         </div>
                         <!-- /Logo -->
                         <h4 class="mb-2">Admin Giriş! Hoşgeldiniz 👋</h4>
-                     
+
                         <form asp-route="adminLogin" method="post" class="my-4">
                             @Html.AntiForgeryToken()
                             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -174,7 +176,58 @@
     <!-- Main JS -->
     <script src="~/adminAssets/js/main.js"></script>
 
+    <!--sweetalert2-->
+    <script src="~/adminAssets/vendor/libs/sweetalert2/sweetalert2.min.js"></script>
 
+
+    <!--For success and error message-->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+      const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+          }
+      });
+      Toast.fire({
+          icon: "success",
+          title: '@Html.Raw(TempData["SuccessMessage"])',
+      });
+        </script>
+
+        TempData.Remove("SuccessMessage");
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+      const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+          }
+      });
+      Toast.fire({
+          icon: "error",
+          title: '@Html.Raw(TempData["ErrorMessage"])',
+      });
+        </script>
+
+        TempData.Remove("ErrorMessage");
+    }
+
+    <!--For success and error message-->
     <partial name="_ValidationScriptsPartial" />
 </body>
 </html>

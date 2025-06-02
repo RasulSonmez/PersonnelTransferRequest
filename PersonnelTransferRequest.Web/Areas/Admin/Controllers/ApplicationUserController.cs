@@ -652,7 +652,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
             TempData["SuccessMessage"] = "Şifreniz başarıyla değiştirildi.";
 
-            return RedirectToAction("Login", "Account", new { area = "Identity" });
+            return RedirectToAction("AdminLogin", "ApplicationUser", new { area = "Admin" });
 
         }
 

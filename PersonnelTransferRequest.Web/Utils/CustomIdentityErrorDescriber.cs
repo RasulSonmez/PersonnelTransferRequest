@@ -69,7 +69,6 @@ namespace PersonnelTransferRequest.Web.Helper
 
         public override IdentityError RecoveryCodeRedemptionFailed()
             => new IdentityError { Code = nameof(RecoveryCodeRedemptionFailed), Description = "Kurtarma kodu geçersiz." };
-
-    
+           
     }
 }

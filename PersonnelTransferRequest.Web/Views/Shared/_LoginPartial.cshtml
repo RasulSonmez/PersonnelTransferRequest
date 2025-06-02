@@ -31,15 +31,17 @@
                     <i class="bx bx-user-circle bx-md text-muted"></i>
                 }
             </div>
-            <ul class="dropdown-menu dropdown-menu-end custom-box-shadow">
+            <ul class="dropdown-menu dropdown-menu-end custom-box-shadow text-center">
                 <li class="text-center">
                     <span class="dropdown-item text-nowrap fs-12-px fw-bold profil-text">Hoşgeldin</span>
                     <div>
                         <span class="text-capitalize fs-12-px fw-bolder"> @userName</span>
                     </div>
-                   
+
                 </li>
                 <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item  fs-12-px text-nowrap text-dark profil-text" href="#"><i class="bx bx-message"></i> Destek Kaydı</a></li>
+                <li><a class="dropdown-item  fs-12-px text-nowrap text-dark profil-text" href="/sifre-degistir"><i class="bx bx-key"></i> Şifre Değiştirme</a></li>
                 <li>
                     <form class="form-inline dropdown-item d-flex justify-content-center" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                         <button type="submit" class="btn btn-link fs-12-px text-nowrap text-dark profil-text">

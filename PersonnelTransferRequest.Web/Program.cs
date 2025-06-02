@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PersonnelTransferRequest.Common;
+using PersonnelTransferRequest.Common.Helper.EmailHelper;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Helper;
 using PersonnelTransferRequest.Web.Services.DataTable;
-using PersonnelTransferRequest.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddMvc().AddSessionStateTempDataProvider();
-
+//email service
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IMailService, MailService>();
 // Registering the DataTable service
 builder.Services.AddScoped<IDataTableService, DataTableService>();
 builder.Services.AddHttpContextAccessor();

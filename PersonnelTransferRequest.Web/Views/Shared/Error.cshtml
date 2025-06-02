@@ -1,34 +1,54 @@
 ﻿@model ErrorViewModel
 @{
     ViewData["Title"] = "Bir Hata Oluştu";
+    Layout = null;
 }
 
-<div class="container mt-5 text-center">
-    <h1 class="display-4 text-danger mb-4">Oops! Bir hata oluştu.</h1>
-    <div class="row justify-content-center my-4">
-        <div class="col-md-3">
-            <img class="img-fluid" src="~/adminAssets/img/illustrations/page-misc-error-light.png" />
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Error Sayfası</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+</head>
+<body>
+    <div class="container mt-5 text-center">
+        <h1 class="display-4 text-danger mb-4">Oops! Bir hata oluştu.</h1>
+        <div class="row justify-content-center my-4">
+            <div class="col-md-3">
+                <img class="img-fluid" src="~/adminAssets/img/illustrations/page-misc-error-light.png" />
+            </div>
         </div>
+        @if (Model.StatusCode != null)
+        {
+            <p class="lead">
+                HTTP Durum Kodu: <strong>@Model.StatusCode</strong>
+            </p>
+        }
+
+        <p class="lead">İşlem gerçekleştirilirken beklenmeyen bir sorun oluştu.</p>
+
+        @if (Model.ShowRequestId)
+        {
+            <p class="text-muted">Hata Kodu (Request ID): <code>@Model.RequestId</code></p>
+        }
+
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-4">
+            Ana Sayfaya Dön
+        </a>
+
+        <hr class="my-5" />
+
+
     </div>
-    @if (Model.StatusCode != null)
-    {
-        <p class="lead">
-            HTTP Durum Kodu: <strong>@Model.StatusCode</strong>
-        </p>
-    }
 
-    <p class="lead">İşlem gerçekleştirilirken beklenmeyen bir sorun oluştu.</p>
+    <!--jQuery-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-    @if (Model.ShowRequestId)
-    {
-        <p class="text-muted">Hata Kodu (Request ID): <code>@Model.RequestId</code></p>
-    }
+    <!--Bootstrap js-->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-4">
-        Ana Sayfaya Dön
-    </a>
-
-    <hr class="my-5" />
-
-    
-</div>
+</body>
+</html>
