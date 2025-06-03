@@ -1,0 +1,64 @@
+﻿@model SystemSetting
+
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="toggleTransfer" @(Model.IsTransferRequestOpen ? "checked" : "") />
+    <label class="form-check-label fw-bolder text-primary fs-6" for="toggleTransfer">Tayin Taleplerini Aç / Kapat</label>
+</div>
+
+<!--function for update transfer request is open or close-->
+<script>
+    $("#toggleTransfer").on("change", function () {
+        let isOpen = $(this).is(":checked");
+
+        $.ajax({
+            url: "/Admin/SystemSetting/UpdateTransferRequest",
+            method: "POST",
+            data: { isOpen: isOpen },
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+
+                Toast.fire({
+                    icon: "success",
+                    title: response.message || "Ayar güncellendi"
+                });
+            },
+            error: function (xhr) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+
+                let errorMessage = "Bir hata oluştu";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+
+                Toast.fire({
+                    icon: "error",
+                    title: errorMessage
+                });
+            }
+        });
+    });
+
+</script>

@@ -117,7 +117,3 @@ let menu, animate;
   window.Helpers.setCollapsed(true, false);
 })();
 
-
-
-
-

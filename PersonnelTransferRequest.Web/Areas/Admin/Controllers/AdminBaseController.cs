@@ -13,14 +13,14 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
     public class AdminBaseController : Controller
     {
         protected readonly ApplicationDbContext _context;
-        protected readonly UserManager<ApplicationUser> _userManager;
-        protected readonly IDataTableService _dataTableService;
+        protected readonly UserManager<ApplicationUser>? _userManager;
+        protected readonly IDataTableService? _dataTableService;
         protected readonly SignInManager<ApplicationUser>? _signInManager;
         protected readonly RoleManager<IdentityRole>? _roleManager;
 
         public AdminBaseController(ApplicationDbContext context,
-                                   UserManager<ApplicationUser> userManager,
-                                   IDataTableService dataTableService,
+                                   UserManager<ApplicationUser>? userManager = null,
+                                   IDataTableService? dataTableService = null,
                                    SignInManager<ApplicationUser>? signInManager = null, RoleManager<IdentityRole>? roleManager = null) 
         {
             _context = context;

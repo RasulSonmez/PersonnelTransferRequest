@@ -8,12 +8,22 @@
     <div class="row">
         <div class="col-12">
             <h4 class="fw-bolder mt-2">@ViewData["Title"]</h4>
-           
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-dark mb-4 fs-14-px fw-bolder" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Tayin Talebinde Bulun
-                </button>
-            </div>
+
+            @if (ViewBag.IsTransferRequestOpen)
+            {
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-outline-dark mb-4 fs-14-px fw-bolder" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Tayin Talebinde Bulun
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center mb-4">
+                    Şu anda tayin talebinde bulunamazsınız. Talep dönemi kapalıdır.
+                </div>
+            }
+
             @if (Model.Requests == null || !Model.Requests.Any())
             {
                 <div class="alert alert-warning">Henüz bir tayin talebiniz bulunmamaktadır.</div>
@@ -44,7 +54,19 @@
                                     <p class="fs-14-px">
                                         <strong>Durum:</strong>
                                         <span class="badge @badgeClass">@request.Status.GetDisplayName()</span>
+
+                                        @if (request.Preferences != null)
+                                        {
+                                            var approvedPref = request.Preferences.FirstOrDefault(p => p.IsApproved);
+                                            if (approvedPref != null)
+                                            {
+                                                <span class="ms-3 text-success">
+                                                    (Onaylanan Tercih: @approvedPref.CourtHouse)
+                                                </span>
+                                            }
+                                        }
                                     </p>
+
 
                                     @if (!string.IsNullOrEmpty(request.Description))
                                     {
@@ -87,9 +109,16 @@
 
             <!-- Modal placeholder -->
             <div id="newTransferRequestModal">
-                <!-- Partial view come here _GetTransferRequestPartial -->
+                <!-- Partial view come here site.js/getTransferRequestPartial _GetTransferRequestPartial -->
             </div>
 
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        //call in transfer request index.cshtml
+        getTransferRequestPartial()
+    </script>
+}

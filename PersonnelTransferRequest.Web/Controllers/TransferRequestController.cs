@@ -56,6 +56,10 @@ namespace PersonnelTransferRequest.Web.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
+            //check system is open transfer request 
+            var setting = await _context.SystemSettings.FirstOrDefaultAsync();
+            ViewBag.IsTransferRequestOpen = setting?.IsTransferRequestOpen ?? false;
+
             //using model to pass data to the view
             var model = new TransferRequestListViewModel
             {

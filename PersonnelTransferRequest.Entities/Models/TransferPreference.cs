@@ -19,6 +19,8 @@ namespace PersonnelTransferRequest.Entities.Models
         [Display(Name = "Tercih Sırası")]
         public int PriorityOrder { get; set; }
 
+        public bool IsApproved { get; set; } = false;
+
         [Required(ErrorMessage = "Tayin Talebi alanı zorunludur.")]
         public int TransferRequestId { get; set; }
         public TransferRequest TransferRequest { get; set; }

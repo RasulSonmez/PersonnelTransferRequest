@@ -11,8 +11,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
  
     public class DashboardController : AdminBaseController
     {
-        public DashboardController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IDataTableService dataTableService)
-           : base(context, userManager, dataTableService)
+        public DashboardController(ApplicationDbContext context)
+           : base(context)
         {
         }
 

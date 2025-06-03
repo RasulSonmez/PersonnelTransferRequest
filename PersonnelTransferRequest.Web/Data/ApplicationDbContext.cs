@@ -14,5 +14,6 @@ namespace PersonnelTransferRequest.Web.Data
         public DbSet<Title> Titles { get; set; }
         public DbSet<TransferRequest> TransferRequests { get; set; }
         public DbSet<TransferPreference> TransferPreferences { get; set; }
+        public DbSet<SystemSetting> SystemSettings { get; set; }
     }
 }

@@ -35,9 +35,6 @@ function getTransferRequestPartial() {
     });
 }       
 
-//call in transfer request index.cshtml
-getTransferRequestPartial()
-
 ////////////////////////////////////////
 
 

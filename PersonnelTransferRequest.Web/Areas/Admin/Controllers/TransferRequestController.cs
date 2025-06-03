@@ -79,32 +79,80 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             return View(transferRequest);
         }
 
-        //Action method to update transfer request status
+        //Action method to update transfer request prefence
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(int Id, TransferStatus Status)
+        public async Task<IActionResult> UpdateTransferRequestAnPrefence(int transferRequestId, int? selectedPreferenceId, string action)
         {
-            var transferRequest = await _context.TransferRequests.FindAsync(Id);
+            var transferRequest = await _context.TransferRequests
+                .Include(tr => tr.Preferences)
+                .FirstOrDefaultAsync(tr => tr.Id == transferRequestId);
 
             if (transferRequest == null)
             {
                 TempData["ErrorMessage"] = "Tayin talebi bulunamadı.";
-                return RedirectToAction(nameof(Details), new { id = Id });
+                return RedirectToAction(nameof(Details), new { id = transferRequestId });
             }
 
-            transferRequest.Status = Status;
+            if (action == "approve")
+            {
+                if (selectedPreferenceId == null)
+                {
+                    TempData["ErrorMessage"] = "Lütfen onaylanacak tercihi seçin.";
+                    return RedirectToAction(nameof(Details), new { id = transferRequestId });
+                }
+
+                // Remove all preferences from approval
+                foreach (var pref in transferRequest.Preferences)
+                {
+                    pref.IsApproved = false;
+                }
+
+                var selectedPreference = transferRequest.Preferences.FirstOrDefault(p => p.Id == selectedPreferenceId);
+
+                if (selectedPreference == null)
+                {
+                    TempData["ErrorMessage"] = "Seçilen tercih bulunamadı.";
+                    return RedirectToAction(nameof(Details), new { id = transferRequestId });
+                }
+
+                // Confirm the selected option
+                selectedPreference.IsApproved = true;
+
+                // Make the request status approved
+                transferRequest.Status = TransferStatus.Approved;
+
+                TempData["SuccessMessage"] = $"Tercih \\'{selectedPreference.CourtHouse}\\' başarıyla onaylandı.";
+            }
+            else if (action == "reject")
+            {
+                // Mark the request as rejected
+                transferRequest.Status = TransferStatus.Rejected;
+
+                // Remove all preferences from approval
+                foreach (var pref in transferRequest.Preferences)
+                {
+                    pref.IsApproved = false;
+                }
+
+                TempData["SuccessMessage"] = "Tayin talebi reddedildi.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Geçersiz işlem.";
+                return RedirectToAction(nameof(Details), new { id = transferRequestId });
+            }
 
             try
             {
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Tayin talebi başarıyla güncellendi.";
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "Bir hata oluştu: " + ex.Message;
             }
 
-            return RedirectToAction(nameof(Details), new { id = Id });
+            return RedirectToAction(nameof(Details), new { id = transferRequestId });
         }
 
         //Action method to delete a title

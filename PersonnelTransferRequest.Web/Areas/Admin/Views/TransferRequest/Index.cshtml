@@ -37,7 +37,12 @@
 
 
     <div class="card-body">
+        <div class="d-inline-flex py-3 px-4 mt-3 mb-5 border rounded-3">
 
+            <div id="containerToggleTransferRequestPartial">
+                <!--_ToggleTransferRequestPartial come here jquery from adminAssets/js/main.js-->
+            </div>
+        </div>
         <div class="table-responsive text-nowrap">
             <table id="titleTable"
                    class="table table-striped"
@@ -63,3 +68,37 @@
 </div>
 
 @await Html.PartialAsync("_DataTableAjaxPartial", "titleTable")
+
+@section Scripts{
+    <!--_ToggleTransferRequestPartial ajax function-->
+    <script>
+        function getToggleTransferRequestPartial() {
+            $.ajax({
+                url: "/Admin/SystemSetting/_ToggleTransferRequestPartial",
+                type: "GET",
+                dataType: "html",
+                success: function (response) {
+                    $("#containerToggleTransferRequestPartial").html(response);
+                },
+                error: function () {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "error",
+                        title: "Birşeyler ters gitti."
+                    });
+                }
+            });
+        }
+        getToggleTransferRequestPartial();
+    </script>
+}
