@@ -15,5 +15,7 @@ namespace PersonnelTransferRequest.Web.Data
         public DbSet<TransferRequest> TransferRequests { get; set; }
         public DbSet<TransferPreference> TransferPreferences { get; set; }
         public DbSet<SystemSetting> SystemSettings { get; set; }
+        public DbSet<SupportMessage> SupportMessages { get; set; }
+        public DbSet<SupportMessageReply> SupportMessageReplies { get; set; }
     }
 }
