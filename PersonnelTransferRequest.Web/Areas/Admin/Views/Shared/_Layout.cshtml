@@ -125,7 +125,7 @@
               
                     <!-- Logout -->
                     <li class="menu-item">
-                        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("AdminLogin", "ApplicationUser", new { area = "Admin" })">
 
                             <a href="javascript:;" onclick="document.getElementById('logoutForm').submit();" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-log-out"></i>

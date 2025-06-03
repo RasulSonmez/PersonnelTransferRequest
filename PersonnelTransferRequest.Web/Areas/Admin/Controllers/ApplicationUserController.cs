@@ -2,13 +2,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using PersonnelTransferRequest.Common.Extensions;
+using PersonnelTransferRequest.Common.Helper.EmailHelper;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Areas.Admin.ViewModel;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Services.DataTable;
 using PersonnelTransferRequest.Web.ViewModels.DataTable;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 {
@@ -21,14 +25,15 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IDataTableService _dataTableService;
-
-        public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IDataTableService dataTableService)
+        private readonly IMailService _mailService;
+        public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IDataTableService dataTableService, IMailService mailService)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _dataTableService = dataTableService;
+            _mailService = mailService;
         }
 
 
@@ -602,8 +607,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             ModelState.AddModelError(string.Empty, "Geçersiz email adresi veya şifre.");
             return View(model);
         }
-
-        //Action method to change user password
+              
+        //Action method to admin change user password
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> AdminChangePassword()
@@ -656,6 +661,127 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
 
         }
 
+        //action method to admin forgot password    
+        [HttpGet]
+        [Route("sifremi-unuttum")]
+        public IActionResult AdminForgotPassword()
+        {
+            return View();
+        }
+
+        //action method handle forgot password fprm submission       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("sifremi-unuttum")]
+        public async Task<IActionResult> AdminForgotPassword(AdminForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null || !user.IsAdmin)
+            {
+                ModelState.AddModelError(string.Empty, "Sistemde bu e-posta adresiyle kayıtlı bir yönetici bulunamadı.");
+                return View(model);
+            }
+
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+            {
+                ModelState.AddModelError(string.Empty, "Bu yönetici e-posta adresi henüz onaylanmamış.");
+                return View(model);
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var callbackUrl = Url.Action(
+                "AdminResetPassword",
+                "ApplicationUser",
+                new { area = "Admin", code = code, email = user.Email },
+                protocol: Request.Scheme);
+
+            var mailRequest = new MailRequest
+            {
+                ToEmail = model.Email,
+                Subject = "Yönetici Şifre Sıfırlama",
+                Body = $"Şifrenizi sıfırlamak için <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>buraya tıklayın</a>."
+            };
+
+            try
+            {
+                await _mailService.SendEmailAsync(mailRequest);
+                TempData["SuccessMessage"] = "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.";
+            }
+            catch (Exception ex)
+            {
+               
+                ModelState.AddModelError(string.Empty, "E-posta gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.");            
+            }
+
+            return View(model);
+        }
+
+        //action method to reset admin password
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("sifre-sifirla")]
+        public IActionResult AdminResetPassword(string code = null, string email = null)
+        {
+            if (code == null || email == null)
+            {
+                return BadRequest("Geçersiz şifre sıfırlama bağlantısı.");
+            }
+
+            var model = new AdminResetPasswordViewModel
+            {
+                Code = code,
+                Email = email
+            };
+
+            return View(model);
+        }
+
+        //action method to handle reset password form submission
+        [HttpPost]      
+        [ValidateAntiForgeryToken]
+        [Route("sifre-sifirla")]
+        public async Task<IActionResult> AdminResetPassword(AdminResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null || !user.IsAdmin)
+            {          
+                return RedirectToAction("AdminResetPasswordConfirmation", "ApplicationUser", new { area = "Admin" });
+            }
+
+            var decodedCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Code));
+            var result = await _userManager.ResetPasswordAsync(user, decodedCode, model.Password);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("AdminResetPasswordConfirmation", "ApplicationUser", new { area = "Admin" });
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        //action method to show reset password confirmation view
+        [HttpGet]       
+        [Route("sifre-sifirlandi")]
+        public IActionResult AdminResetPasswordConfirmation()
+        {
+            return View();
+        }
     }
 }
 

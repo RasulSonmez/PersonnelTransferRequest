@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -23,9 +24,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddMvc().AddSessionStateTempDataProvider();
+
 //email service
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddTransient<IMailService, MailService>();
+
 // Registering the DataTable service
 builder.Services.AddScoped<IDataTableService, DataTableService>();
 builder.Services.AddHttpContextAccessor();
@@ -93,8 +96,6 @@ app.MapGet("/admin", async context =>
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
-
-
 
 app.MapControllerRoute(
     name: "areas",
