@@ -97,4 +97,41 @@ PersonnelTransferRequest/
   - Admin tarafı için özel Middleware ile isteklerin loglanması.
   - 14 günde bir logların temizlenmesi.
 
+## 🔐 Güvenlik Önlemleri
+
+- **Form Validasyonu:**  
+  Tüm formlarda hem istemci tarafında (HTML5 `required`, `type`, `maxlength` vb.) hem sunucu tarafında model doğrulama (`[Required]`, `[StringLength]`, `[EmailAddress]` vb.) ile veri güvenliği sağlanmıştır.
+
+- **Anti-Forgery Token:**  
+  Cross-Site Request Forgery (CSRF) saldırılarına karşı ASP.NET Core’un yerleşik `@Html.AntiForgeryToken()` özelliği kullanılarak formlarda güvenlik artırılmıştır.
+
+- **Harici Kaynak Yönetimi:**  
+  Uygulamada CDN kullanımı tercih edilmemiş, tüm kütüphaneler yerel olarak host edilmiştir. Bu sayede dış kaynaklardan doğabilecek güvenlik açıkları önlenmiştir.
+
+- **Kimlik Doğrulama ve Yetkilendirme:**  
+  ASP.NET Core Identity kullanılarak kullanıcı kimlik doğrulaması sağlanmış, roller bazında (örn. `Admin`) yetkilendirme uygulanmıştır.
+
+- **Şifre Politikası:**  
+  Kullanıcı şifreleri için aşağıdaki kurallar zorunlu kılınmıştır:
+
+  - En az bir büyük harf
+  - En az bir küçük harf
+  - En az bir rakam
+  - En az bir özel karakter
+  - Minimum şifre uzunluğu: 6 karakter
+
+- **Hassas Verilerin Korunması:**  
+  Bağlantı stringleri ve SMTP gibi hassas bilgiler `appsettings.json` içinde tutulmakta, dışa açık commit'lerde paylaşılmamaktadır.
+
+- **Loglama:**  
+  Serilog kullanılarak hata ve kullanıcı işlemleri loglanmaktadır.
+
+  - Personel tarafında: Action bazlı loglama
+  - Admin tarafında: Custom Middleware ile kapsamlı log kaydı tutulmaktadır.
+
+- **Kapsamlı Rol Yönetimi:**  
+  Admin kullanıcıları yalnızca özel olarak atanmakta ve sistem üzerinde yeni admin oluşturulması sınırlandırılmıştır.
+
+---
+
 Not: Proje içerisindeki tüm önemli sınıflara ve metotlara açıklayıcı yorum satırları (summary etiketleri) eklenmiştir. Bu sayede kod okunabilirliği ve geliştirici deneyimi artırılmıştır.
