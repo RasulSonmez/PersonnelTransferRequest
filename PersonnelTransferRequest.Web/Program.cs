@@ -5,6 +5,7 @@ using PersonnelTransferRequest.Common.Helper.EmailHelper;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Helper;
+using PersonnelTransferRequest.Web.Middleware;
 using PersonnelTransferRequest.Web.Services.DataTable;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
@@ -99,6 +100,10 @@ else
     app.UseHsts();
     app.UseStatusCodePagesWithReExecute("/Home/Error", "?code={0}");
 }
+
+// Use Serilog request logging middleware
+app.UseMiddleware<LoggingMiddleware>();
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
