@@ -40,9 +40,19 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
               .Where(a => a.DeletedAt == null)
               .CountAsync(),
 
+                SupportMessageCount = await _context.SupportMessages
+              .Where(a => a.DeletedAt == null)
+              .CountAsync(),
+
                 TransferRequests = await _context.TransferRequests
               .Include(a => a.Preferences)
               .Include(a => a.ApplicationUser)
+              .Where(a => a.DeletedAt == null)
+              .OrderByDescending(a => a.CreatedAt)
+              .Take(5)
+              .ToListAsync(),
+
+                 SupportMessages = await _context.SupportMessages             
               .Where(a => a.DeletedAt == null)
               .OrderByDescending(a => a.CreatedAt)
               .Take(5)
