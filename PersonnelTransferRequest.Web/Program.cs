@@ -6,6 +6,8 @@ using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Helper;
 using PersonnelTransferRequest.Web.Services.DataTable;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +35,36 @@ builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddScoped<IDataTableService, DataTableService>();
 builder.Services.AddHttpContextAccessor();
 
+//serilog
+var columnOptions = new ColumnOptions();
+columnOptions.Store.Remove(StandardColumn.Properties);
+columnOptions.TimeStamp.ConvertToUtc = true;
+columnOptions.Properties.DataLength = 1000;
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+
+    .WriteTo.File(
+        path: "logs/log-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 14, 
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+    ) 
+    .WriteTo.MSSqlServer(
+        connectionString: connectionString,
+        sinkOptions: new MSSqlServerSinkOptions
+        {
+            TableName = "Logs",
+            AutoCreateSqlTable = true
+        },
+        columnOptions: columnOptions,
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+    )
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+//cookie settings
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromMinutes(120); 

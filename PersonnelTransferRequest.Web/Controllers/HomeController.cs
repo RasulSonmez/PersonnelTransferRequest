@@ -13,11 +13,13 @@ namespace PersonnelTransferRequest.Web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<HomeController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -29,13 +31,18 @@ namespace PersonnelTransferRequest.Web.Controllers
         [Route("profil")]
         public async Task<IActionResult> MyProfile()
         {
+            _logger.LogInformation("MyProfile action baþlatýldý.");
+
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
             {
-                //If the user does not exist in the system, redirect to the login page or show an error message.
+                _logger.LogWarning("User bulunamadý ve logine yönlendirildi.");
+
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
+
+            _logger.LogInformation("userId için kullanýcý profili alýndý: {UserId}", user.Id);
 
             return View(user);
 
@@ -45,6 +52,8 @@ namespace PersonnelTransferRequest.Web.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? code = null)
         {
+            _logger.LogError("Error sayfasý hata kodu {StatusCode} verdi, RequestId: {RequestId}", code, Activity.Current?.Id ?? HttpContext.TraceIdentifier);
+
             var viewModel = new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,

@@ -7,6 +7,7 @@ using PersonnelTransferRequest.Entities.Enums;
 using PersonnelTransferRequest.Entities.Models;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.ViewModels;
+using Serilog;
 
 namespace PersonnelTransferRequest.Web.Controllers
 {
@@ -16,12 +17,15 @@ namespace PersonnelTransferRequest.Web.Controllers
 
         protected readonly ApplicationDbContext _context;
         protected readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<HomeController> _logger;
 
-        public TransferRequestController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public TransferRequestController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<HomeController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
+
 
         //action method to display the list of transfer requests for the logged-in user
         [HttpGet]
@@ -30,17 +34,27 @@ namespace PersonnelTransferRequest.Web.Controllers
         {
             //Check if the user is authenticated
             if (!User.Identity.IsAuthenticated)
+            {
+                Log.Warning("Tayin talepleri Index: Yetkisiz erişim denemesi.");
                 return Forbid("Yetkisiz erişim.");
+            }
 
             var userId = _userManager.GetUserId(User);
 
             if (string.IsNullOrEmpty(userId))
+            {
+                Log.Warning("Tayin talepleri Index: Kullanıcı bilgisi alınamadı.");
                 return Forbid("Kullanıcı bilgisi alınamadı.");
+            }
+
 
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null || user.IsDelete)
+            {
+                Log.Warning("Tayin talepleri Index: Kullanıcı bulunamadı veya silinmiş. KullanıcıId: {UserId}", userId);
                 return NotFound("Kullanıcı bulunamadı.");
+            }
 
             //Total count of transfer requests for the user
             var totalCount = await _context.TransferRequests
@@ -69,6 +83,9 @@ namespace PersonnelTransferRequest.Web.Controllers
                 TotalCount = totalCount
             };
 
+            Log.Information("Tayin talepleri Index: Sayfa {Page}, Sayfa boyutu {PageSize}, Toplam kayıt {TotalCount} ile başarılı getirildi. KullanıcıId: {UserId}",
+      page, pageSize, totalCount, userId);
+
             return View(model);
         }
 
@@ -86,23 +103,35 @@ namespace PersonnelTransferRequest.Web.Controllers
         {
             // Check if the user is authenticated
             if (!User.Identity.IsAuthenticated)
+            {
+                Log.Warning("Transfer talebi oluşturma: Yetkisiz erişim denemesi.");
                 return Forbid("Yetkisiz erişim.");
+            }
 
             var userId = _userManager.GetUserId(User);
 
             // If the user ID is null or empty, return a forbidden response
             if (string.IsNullOrEmpty(userId))
+            {
+                Log.Warning("Transfer talebi oluşturma: Kullanıcı bilgisi alınamadı.");
                 return Forbid("Kullanıcı bilgisi alınamadı.");
+            }
 
             var user = await _userManager.FindByIdAsync(userId);
 
             // If the user is not found or is marked as deleted, return a not found response
             if (user == null || user.IsDelete)
+            {
+                Log.Warning("Transfer talebi oluşturma: Kullanıcı bulunamadı veya silinmiş. KullanıcıId: {UserId}", userId);
                 return NotFound("Kullanıcı bulunamadı.");
+            }
+
 
             // custom controllers
             if (model.Preferences == null || model.Preferences.Count == 0)
             {
+                Log.Warning("Transfer talebi oluşturma: Tercih yapılmamış. KullanıcıId: {UserId}", userId);
+
                 ModelState.AddModelError("", "En az 1 tercih yapılmalıdır.");
             }
 
@@ -110,16 +139,22 @@ namespace PersonnelTransferRequest.Web.Controllers
             {
                 if (model.Preferences.Count > 5)
                 {
+                    Log.Warning("Transfer talebi oluşturma: 5'ten fazla tercih yapılmaya çalışıldı. KullanıcıId: {UserId}, TercihSayısı: {Count}", userId, model.Preferences.Count);
+
                     ModelState.AddModelError("", "En fazla 5 tercih yapabilirsiniz.");
                 }
 
                 if (model.Preferences.Select(p => p.PriorityOrder).Distinct().Count() != model.Preferences.Count)
                 {
+                    Log.Warning("Transfer talebi oluşturma: Tercih sıraları benzersiz değil. KullanıcıId: {UserId}", userId);
+
                     ModelState.AddModelError("", "Tercih sıraları benzersiz olmalıdır.");
                 }
 
                 if (model.Preferences.Select(p => p.CourtHouse).Distinct().Count() != model.Preferences.Count)
                 {
+                    Log.Warning("Transfer talebi oluşturma: Aynı adliye birden fazla tercih edilmiş. KullanıcıId: {UserId}", userId);
+
                     ModelState.AddModelError("", "Aynı adliye birden fazla tercih edilemez.");
                 }
             }
@@ -131,6 +166,7 @@ namespace PersonnelTransferRequest.Web.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)
                     .ToList();
+                Log.Warning("Transfer talebi oluşturma: ModelState geçersiz. Hatalar: {Errors}. KullanıcıId: {UserId}", string.Join(", ", errorList), userId);
 
                 TempData["ModelErrors"] = JsonConvert.SerializeObject(errorList);
                 TempData["OpenModal"] = "true";
@@ -160,11 +196,16 @@ namespace PersonnelTransferRequest.Web.Controllers
                 _context.TransferRequests.Add(request);
                 await _context.SaveChangesAsync();
 
+                Log.Information("Transfer talebi başarıyla oluşturuldu. TransferRequestId: {RequestId}, KullanıcıId: {UserId}", request.Id, userId);
+
                 TempData["SuccessMessage"] = "Tayin talebiniz başarıyla oluşturuldu.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Transfer talebi oluşturma sırasında hata oluştu. KullanıcıId: {UserId}", userId);
+
+
                 ModelState.AddModelError("", "Birşeyler ters gitti: " + ex.Message);
 
                 var errorList = ModelState.Values
