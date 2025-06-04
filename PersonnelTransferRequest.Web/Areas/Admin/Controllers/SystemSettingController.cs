@@ -64,8 +64,8 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
 
                 string message = isOpen
-                    ? "Transfer talepleri açıldı."
-                    : "Transfer talepleri kapatıldı.";
+                    ? "Tayin talepleri açıldı."
+                    : "Tayin talepleri kapatıldı.";
 
                 return Ok(new { success = true, message });
             }

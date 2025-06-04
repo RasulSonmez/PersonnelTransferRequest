@@ -1,17 +1,15 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Tayin Talepleri";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
     //colums for datatable dynamic
     var columns = new List<object>
 {
-
         new { data = "requestDate" },
-        new { data = "applicationUser_RegistrationNumber" },
-        new { data = "applicationUser_Name" },
-        new { data = "applicationUser_Surname" },
-        new { data = "applicationUser_Gsm" },
+        new { data = "registrationNumber" },
+        new { data = "name" },
+        new { data = "surname" },
+        new { data = "gsm" },
         new {
             data = (string?)null,
             isAction = true,
@@ -21,13 +19,12 @@
             editUrl = "/Admin/TransferRequest/Edit/",
             detailsUrl = "/Admin/TransferRequest/Details/",
             deleteUrl = "/Admin/TransferRequest/Delete/"
-        } //actions
+        }
     };
-
     //columsJson Serialized
     var columnsJson = System.Text.Json.JsonSerializer.Serialize(columns);
-
 }
+
 
 @Html.AntiForgeryToken()
 

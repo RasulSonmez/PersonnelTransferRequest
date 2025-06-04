@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonnelTransferRequest.Common.Extensions;
 using PersonnelTransferRequest.Entities.Enums;
 using PersonnelTransferRequest.Entities.Models;
+using PersonnelTransferRequest.Web.Areas.Admin.ViewModel;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Services.DataTable;
 using PersonnelTransferRequest.Web.ViewModels.DataTable;
@@ -34,22 +35,33 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
         {
             try
             {
-                var query = _context.SupportMessages          
-             .Where(t => t.DeletedAt == null)
-             .Select(t => new {
-                 id = t.Id,
-                 createdAt = t.CreatedAt,
-                 title = t.Title.CustomSubstring(0, 30, "..."),
-                 status = t.Status.GetDisplayName(),                   
-             })
-             .OrderByDescending(t => t.createdAt);
-                var result = await _dataTableService.GetResultAsync(query, model);
+                var query = _context.SupportMessages
+         .Where(sm => sm.DeletedAt == null)
+         .Select(sm => new
+         {
+             sm.Id,
+             sm.CreatedAt,
+             sm.Title,
+             sm.Status
+         });
 
+                var list = await query.ToListAsync();
+
+                var resultList = list.Select(sm => new SupportMessageDataTableViewModel
+                {
+                    Id = sm.Id,
+                    CreatedAt = sm.CreatedAt,
+                    Title = sm.Title.Length > 30 ? sm.Title.Substring(0, 30) + "..." : sm.Title,
+                    Status = sm.Status.HasValue ? sm.Status.Value.GetDisplayName() : "Bilinmiyor"
+                });
+
+                var result = await _dataTableService.GetResultAsync(resultList.AsQueryable(), model);
                 return Json(result);
+
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Birşeyler ters gitti: " + ex.Message);
+                return StatusCode(500, "Bir şeyler ters gitti: " + ex.Message);
             }
         }
 

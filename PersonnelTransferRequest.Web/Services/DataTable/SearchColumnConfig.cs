@@ -1,4 +1,5 @@
 ﻿using PersonnelTransferRequest.Entities.Models;
+using PersonnelTransferRequest.Web.Areas.Admin.ViewModel;
 
 namespace PersonnelTransferRequest.Web.Services.DataTable
 {
@@ -14,14 +15,16 @@ namespace PersonnelTransferRequest.Web.Services.DataTable
     public static class SearchColumnConfig
     {
         private static readonly Dictionary<Type, string[]> _searchableColumns = new()
-        {
-            { typeof(ApplicationUser), new[] { "Name", "Surname", "RegistrationNumber", "UserName", "Email", "GSM" } },
-            { typeof(Title), new[] { "TitleName" } },
-            { typeof(TransferRequest), new[] { "RequestDate", "ApplicationUser.Name", "ApplicationUser.Surname" } },
-            { typeof(SupportMessage), new[] { "CreatedAt", "Title", "Status" } }
+    {
+        { typeof(ApplicationUser), new[] { "Name", "Surname", "RegistrationNumber", "UserName", "Email", "GSM" } },
 
-            //Other entities can be added here
-        };
+        { typeof(Title), new[] { "TitleName" } },
+
+        { typeof(TransferRequestDataTableViewModel), new[] { "RequestDate", "Name", "Surname", "RegistrationNumber", "Gsm" } },
+
+       { typeof(SupportMessageDataTableViewModel), new[] { "CreatedAt", "Title", "Status" } }
+
+    };
 
         public static string[] GetSearchableColumnsFor<T>()
         {
@@ -30,4 +33,5 @@ namespace PersonnelTransferRequest.Web.Services.DataTable
                 : Array.Empty<string>();
         }
     }
+
 }

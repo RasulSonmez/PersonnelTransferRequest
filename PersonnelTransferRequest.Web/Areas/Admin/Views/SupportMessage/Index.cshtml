@@ -5,22 +5,21 @@
 
     //colums for datatable dynamic
     var columns = new List<object>
-{
-        new { data = "createdAt" },
-        new { data = "title" },
-        new { data = "status" },
+    {
+     new { data = "createdAt" },
+    new { data = "title" },
+    new { data = "status" },
         new {
             data = (string?)null,
             isAction = true,
-            hasEdit = false,
+            hasEdit = true,
             hasDetails = true,
-            hasDelete = false,
+            hasDelete = true,
             editUrl = "/Admin/SupportMessage/Edit/",
             detailsUrl = "/Admin/SupportMessage/Details/",
             deleteUrl = "/Admin/SupportMessage/Delete/"
-        } //actions
+        }
     };
-
     //columsJson Serialized
     var columnsJson = System.Text.Json.JsonSerializer.Serialize(columns);
 

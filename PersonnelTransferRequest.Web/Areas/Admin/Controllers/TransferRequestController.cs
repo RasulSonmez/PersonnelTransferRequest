@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonnelTransferRequest.Entities.Enums;
 using PersonnelTransferRequest.Entities.Models;
+using PersonnelTransferRequest.Web.Areas.Admin.ViewModel;
 using PersonnelTransferRequest.Web.Data;
 using PersonnelTransferRequest.Web.Services.DataTable;
 using PersonnelTransferRequest.Web.ViewModels.DataTable;
@@ -34,27 +35,28 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             try
             {
                 var query = _context.TransferRequests
-             .Include(t => t.Preferences)
-             .Include(t => t.ApplicationUser)
-             .Where(t => t.DeletedAt == null)
-             .Select(t => new {
-                 id = t.Id,
-                 requestDate = t.RequestDate,              
-                 applicationUser_RegistrationNumber = t.ApplicationUser.RegistrationNumber,
-                 applicationUser_Name = t.ApplicationUser.Name,
-                 applicationUser_Surname = t.ApplicationUser.Surname,
-                 applicationUser_Gsm = t.ApplicationUser.GSM,               
-             })
-             .OrderByDescending(t => t.requestDate);
+                    .Include(t => t.ApplicationUser)
+                    .Where(t => t.DeletedAt == null)
+                    .Select(t => new TransferRequestDataTableViewModel
+                    {
+                        Id = t.Id,
+                        RequestDate = t.RequestDate,
+                        RegistrationNumber = t.ApplicationUser.RegistrationNumber,
+                        Name = t.ApplicationUser.Name,
+                        Surname = t.ApplicationUser.Surname,
+                        Gsm = t.ApplicationUser.GSM
+                    })
+                    .AsQueryable(); 
+
                 var result = await _dataTableService.GetResultAsync(query, model);
-               
                 return Json(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Birşeyler ters gitti: " + ex.Message);
+                return StatusCode(500, "Bir şeyler ters gitti: " + ex.Message);
             }
         }
+
 
         //Action method to show transfer request details
         public async Task<IActionResult> Details(int? id)
