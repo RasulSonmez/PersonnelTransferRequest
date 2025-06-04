@@ -42,6 +42,14 @@ namespace PersonnelTransferRequest.Web.Controllers
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Admin"))
+            {
+                _logger.LogWarning("Admin kullanýcý profil sayfasýna eriþmeye çalýþtý. Yönlendirildi.");
+                return RedirectToAction("Index", "Admin");
+            }
+
+
             _logger.LogInformation("userId için kullanýcý profili alýndý: {UserId}", user.Id);
 
             return View(user);

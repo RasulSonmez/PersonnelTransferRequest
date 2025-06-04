@@ -45,6 +45,7 @@ namespace PersonnelTransferRequest.Web.Controllers
                 return Forbid("Kullanıcı bilgisi alınamadı.");
             }
 
+        
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null || user.IsDelete)
@@ -52,6 +53,14 @@ namespace PersonnelTransferRequest.Web.Controllers
                 _logger.LogWarning($"Index sayfası: Kullanıcı bulunamadı veya silinmiş. UserId: {userId}");
                 return NotFound("Kullanıcı bulunamadı.");
             }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Admin"))
+            {
+                _logger.LogWarning("Admin kullanıcı profil sayfasına erişmeye çalıştı. Yönlendirildi.");
+                return RedirectToAction("Index", "Admin");
+            }
+
 
             //Total count of transfer requests for the user
             var totalCount = await _context.SupportMessages
@@ -111,6 +120,7 @@ namespace PersonnelTransferRequest.Web.Controllers
         }
 
         //action method to display the form for creating a new support message
+        [Route("destek-talebi-olustur")]
         public IActionResult Create()
         {
             return View();
@@ -119,6 +129,7 @@ namespace PersonnelTransferRequest.Web.Controllers
         //action method to handle the form submission for creating a new support message
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("destek-talebi-olustur")]
         public async Task<IActionResult> Create(SupportMessage model)
         {
             try
@@ -131,6 +142,14 @@ namespace PersonnelTransferRequest.Web.Controllers
                     TempData["ErrorMessage"] = "Kullanıcı doğrulanamadı. Lütfen tekrar giriş yapınız.";
                     return RedirectToAction("Error", "Home", new { code = 401 });
                 }
+
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Admin"))
+                {
+                    _logger.LogWarning("Admin kullanıcı profil sayfasına erişmeye çalıştı. Yönlendirildi.");
+                    return RedirectToAction("Index", "Admin");
+                }
+
 
                 if (ModelState.IsValid)
                 {

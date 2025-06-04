@@ -39,6 +39,9 @@ namespace PersonnelTransferRequest.Web.Controllers
                 return Forbid("Yetkisiz erişim.");
             }
 
+           
+
+
             var userId = _userManager.GetUserId(User);
 
             if (string.IsNullOrEmpty(userId))
@@ -54,6 +57,15 @@ namespace PersonnelTransferRequest.Web.Controllers
             {
                 Log.Warning("Tayin talepleri Index: Kullanıcı bulunamadı veya silinmiş. KullanıcıId: {UserId}", userId);
                 return NotFound("Kullanıcı bulunamadı.");
+            }
+
+            //check admin user
+        
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Admin"))
+            {
+                _logger.LogWarning("Admin kullanıcı profil sayfasına erişmeye çalıştı. Yönlendirildi.");
+                return RedirectToAction("Index", "Admin");
             }
 
             //Total count of transfer requests for the user
