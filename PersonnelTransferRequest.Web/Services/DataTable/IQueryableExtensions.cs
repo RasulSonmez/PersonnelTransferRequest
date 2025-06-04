@@ -27,6 +27,11 @@ namespace PersonnelTransferRequest.Common.Extensions
             var parameter = Expression.Parameter(typeof(T), "p");
             Expression? orExpression = null;
 
+            var toLowerMethod = typeof(string).GetMethod("ToLower", Array.Empty<Type>())!; // ToLower()
+
+            var loweredValue = value.ToLower();  // search term to lowercase
+            var constant = Expression.Constant(loweredValue, typeof(string));
+
             foreach (var propName in propertyNames)
             {
                 var property = Expression.PropertyOrField(parameter, propName);
@@ -34,9 +39,10 @@ namespace PersonnelTransferRequest.Common.Extensions
                 if (property.Type != typeof(string))
                     continue;
 
-                var method = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
-                var constant = Expression.Constant(value, typeof(string));
-                var containsCall = Expression.Call(property, method, constant);
+                var loweredProperty = Expression.Call(property, toLowerMethod);
+
+                var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
+                var containsCall = Expression.Call(loweredProperty, containsMethod, constant);
 
                 orExpression = orExpression == null
                     ? containsCall
@@ -49,6 +55,7 @@ namespace PersonnelTransferRequest.Common.Extensions
             var lambda = Expression.Lambda<Func<T, bool>>(orExpression, parameter);
             return source.Where(lambda);
         }
+
 
 
 
