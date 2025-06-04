@@ -17,7 +17,8 @@ namespace PersonnelTransferRequest.Web.Services.DataTable
         {
             { typeof(ApplicationUser), new[] { "Name", "Surname", "RegistrationNumber", "UserName", "Email", "GSM" } },
             { typeof(Title), new[] { "TitleName" } },
-            { typeof(TransferRequest), new[] { "RequestDate", "ApplicationUser.Name", "ApplicationUser.Surname" } }
+            { typeof(TransferRequest), new[] { "RequestDate", "ApplicationUser.Name", "ApplicationUser.Surname" } },
+            { typeof(SupportMessage), new[] { "CreatedAt", "Title", "Status" } }
 
             //Other entities can be added here
         };

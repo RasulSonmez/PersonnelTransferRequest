@@ -1,0 +1,77 @@
+﻿@model SupportMessagetListViewModel
+@{
+    ViewData["Title"] = "Destek Kaydı";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row my-5">
+    <div class="col-12">
+        <h4 class="fw-bolder mt-2">@ViewData["Title"]</h4>
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-outline-dark mb-4 fs-14-px fw-bolder" asp-action="Create">Destek kaydı oluştur</a>
+        </div>
+
+        <div>
+            @if (Model.SupportMessages == null || !Model.SupportMessages.Any())
+            {
+                <div class="alert alert-warning">Henüz bir destek talebiniz bulunmamaktadır.</div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mb-3">
+                    @foreach (var item in Model.SupportMessages)
+                    {
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 custom-box-shadow">
+                                <div class="card-header bg-first text-white py-3 fs-12-px">
+                                    <div class="d-flex justify-content-between">
+                                        <span>   @item?.CreatedAt.ToString("dd/mm/yy") tarihli Destek Talebiniz</span>
+                                        <span class="text-white">   @item?.Status.GetDisplayName()</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <a asp-action="Details" asp-route-id="@item?.Id" class="text-center text-decoration-none text-dark fw-bolder">
+
+                                        <h5 class="fw-bolder fs-12px text-dark fs-14-px">
+                                          
+                                            @(item?.Title?.CustomSubstring(0, 30, "..."))
+                                        </h5>
+                                        <hr />
+                                        <h6 class="fw-bold text-muted fs-12px mb-4">
+                                            @(item?.Message?.CustomSubstring(0, 80, "..."))
+                                        </h6>
+                                        <div class="d-flex justify-content-end mb-4">
+                                            <h5 class="fs-12-px fw-bold">
+                                                @item?.CreatedAt
+                                            </h5>
+                                        </div>
+                                        <div class="d-flex justify-content-end mb-4">
+                                            <div class="btn btn-outline-dark btn-sm fs-12-px">Detay</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Controll of pagination -->
+                <nav aria-label="Sayfalama">
+                    <ul class="pagination justify-content-center">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link bg-first" href="?page=@i">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+
+
+
+      
+
+    </div>
+</div>

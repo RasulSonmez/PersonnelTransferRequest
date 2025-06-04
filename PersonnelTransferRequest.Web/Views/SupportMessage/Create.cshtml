@@ -1,0 +1,56 @@
+﻿@model SupportMessage
+@{
+    ViewData["Title"] = "Destek Talebi Oluştur";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-6">
+        <div class="card card h-100 border-0 custom-box-shadow">
+            <div class="card-header bg-first text-white py-3">
+                @ViewData["Title"]
+            </div>
+            <div class="card-body">
+
+                <div class=" customCard-glass p-3">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Title" class="fw-bolder fs-14-px mb-2"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger fs-12-px"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Message" class="fw-bolder fs-14-px mb-2"></label>
+                            <textarea asp-for="Message" class="form-control" rows="4"> </textarea>
+                            <small id="charCount" class="form-text fs-12-px text-danger">Kalan karakter: 5000</small>
+                            <span asp-validation-for="Message" class="text-danger fs-12-px"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Gönder" class="btn btn-dark text-white" />
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ 
+ 
+</div>
+
+@section Scripts{ 
+    <script>
+        // count char for Message textarea
+        $(document).ready(function () {
+            const maxLength = 5000;
+            $('#Message').on('input', function () {
+                let currentLength = $(this).val().length;
+                let remaining = maxLength - currentLength;
+                $('#charCount').text('Kalan karakter: ' + remaining);
+            });
+        });
+
+    </script>
+}

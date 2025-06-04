@@ -12,6 +12,6 @@ namespace PersonnelTransferRequest.Entities.Enums
         [Display(Name = "Yeni")]
         New = 0,
         [Display(Name = "Cevap verildi")]
-        InProcess = 1,       
+        Answered = 1,       
     }
 }

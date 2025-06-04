@@ -120,8 +120,8 @@ namespace PersonnelTransferRequest.Web.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            _logger.LogInformation("Kullanıcı şifresini başarıyla değiştirdi.");
-            StatusMessage = "Şifreniz başarıyla değiştirildi.";
+            _logger.LogInformation("Kullanıcı şifresini başarıyla değiştirdi. Bir sonraki girişinizde yeni şifreniz ile giriniz.");
+            StatusMessage = "Şifreniz başarıyla değiştirildi. Bir sonraki girişinizde yeni şifreniz ile giriniz.";
 
             return RedirectToPage();
         }

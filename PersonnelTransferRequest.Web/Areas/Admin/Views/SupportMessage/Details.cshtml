@@ -1,0 +1,160 @@
+﻿@model SupportMessage
+
+@{
+    ViewData["Title"] = "Details";
+    var user = ViewBag.User as ApplicationUser;
+}
+
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div class="mb-3">
+                        Personel Bilgileri:
+                        @if (user != null)
+                        {
+                            <div class="text-dark">
+                                <strong>Ad Soyad:</strong> @user.Name @user.Surname<br />
+                                <strong>Kullanıcı Adı:</strong> @user.UserName<br />
+                                <strong>GSM:</strong> @user.GSM
+                            </div>
+                        }
+
+                    </div>
+
+                    <small class="text-muted mb-3">@(Model.CreatedAt.ToString("dd.MM.yyyy HH:MM"))</small>
+                </div>
+                <hr />
+                <h5 class="fw-bolder small mb-3">Başlık: @Model.Title</h5>
+
+                <p class="mb-2">@Model.Message</p>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        @foreach (var item in Model.SupportMessageReplies.OrderByDescending(a => a.CreatedAt))
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="timeline-event">
+                        <div class="timeline-header mb-1">
+                            <h6 class="mb-4 fw-bolder">Admin</h6>
+                            <small class="text-muted">@(item.CreatedAt.ToString("dd.MM.yyyy HH:MM"))</small>
+                        </div>
+                        <p class="mb-2">@item.Message</p>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-6">
+        <div class="card">
+
+            <div class="card-body">
+                <form id="replyForm">
+                    @Html.AntiForgeryToken()
+                    <textarea class="form-control w-100" id="replyMessage" name="message" rows="5" placeholder="Cevabınız..."></textarea>
+                    <button type="submit" class="btn btn-sm btn-primary mt-3">Cevap ver <i class='bx bx-message-square-dots'></i></button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div>
+            <a asp-area="Admin" asp-controller="SupportMessage" asp-action="Index" class="nav-link mt-2"><i class='bx bx-left-arrow-alt'></i> Listeye dön</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!--reply message function-->
+    <script>
+$(document).ready(function () {
+    $("#replyForm").submit(function (e) {
+        e.preventDefault();
+
+        var message = $("#replyMessage").val();
+        var id = @Model.Id;
+
+        if (!message.trim()) {
+            Swal.fire({
+                icon: "warning",
+                title: "Mesaj boş olamaz!",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true
+            });
+            return;
+        }
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $.ajax({
+            url: "/Admin/SupportMessage/ReplySupportMessage/",
+            type: "POST",
+            data: {
+                id: id,
+                message: message,
+                __RequestVerificationToken: token
+            },
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: "top-end",
+                        icon: "success",
+                        title: "Başarılı",
+                        text: response.message,  
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true
+                    }).then(() => window.location.reload());
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: "top-end",
+                        icon: "error",
+                        title: "Hata",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true
+                    });
+                }
+            },
+
+            error: function () {
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "error",
+                    title: "Sunucu hatası",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true
+                });
+            }
+        });
+    });
+});
+    </script>
+
+
+}

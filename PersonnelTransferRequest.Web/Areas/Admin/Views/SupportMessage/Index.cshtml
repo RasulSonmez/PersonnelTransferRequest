@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Destek Mesajları";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    //colums for datatable dynamic
+    var columns = new List<object>
+{
+        new { data = "createdAt" },
+        new { data = "title" },
+        new { data = "status" },
+        new {
+            data = (string?)null,
+            isAction = true,
+            hasEdit = false,
+            hasDetails = true,
+            hasDelete = false,
+            editUrl = "/Admin/SupportMessage/Edit/",
+            detailsUrl = "/Admin/SupportMessage/Details/",
+            deleteUrl = "/Admin/SupportMessage/Delete/"
+        } //actions
+    };
+
+    //columsJson Serialized
+    var columnsJson = System.Text.Json.JsonSerializer.Serialize(columns);
+
+}
+
+@Html.AntiForgeryToken()
+
+<h2 class="fw-bolder">@ViewData["Title"]</h2>
+
+<div class="card">
+
+
+    <div class="card-body">
+    
+        <div class="table-responsive text-nowrap">
+            <table id="supportMessageTable"
+                   class="table table-striped"
+                   data-url="@Url.Action("GetAllSupportMessageForDataTable", "SupportMessage")"
+                   data-columns='@Html.Raw(columnsJson)'
+                   style="width:100%">
+                <thead>
+                    <tr>
+
+                        <th>Oluşturulma Tarihi</th>
+                        <th>Başlık</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <!--Data getting from dataTable-->
+            </table>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_DataTableAjaxPartial", "supportMessageTable")

@@ -1,0 +1,72 @@
+﻿@model SupportMessage
+
+@{
+    ViewData["Title"] = "Destek Mesaj Detayı";
+}
+
+
+<div class="row my-4">
+    <div class="col-12">
+        <h4 class="fw-bolder mt-2">@ViewData["Title"]</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <div>
+                <div class="card card h-100 border-0 custom-box-shadow">
+                    <div class="card-header bg-first text-white py-3 fs-12-px">
+                        <h5 class="fw-bolder fs-12-px">@(Model.CreatedAt.ToString("dd.MM.yyyy HH:MM")) tarihli mesajınız</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="fs-12-px fw-bolder">Başlık :@Model.Title</h6>
+                        <hr />
+                        <p class="fs-12-px">@Model.Message</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @if (Model.SupportMessageReplies == null || !Model.SupportMessageReplies.Any())
+            {
+                <span></span>
+            }
+            else
+            {
+                <div class="d-flex justify-content-end">
+                    <div class="card h-100 border-0 custom-box-shadow">
+                        <div class="card-header bg-first text-white py-3 fs-12-px">
+                            <h5 class="fw-bolder fs-12-px">Yönetici Cevabı</h5>
+                        </div>
+                        <div class="card-body">
+
+                            @foreach (var item in Model.SupportMessageReplies.OrderByDescending(a => a.CreatedAt))
+                            {
+                                <div class="timeline-item timeline-item-transparent mb-5">
+                                    <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-warning"></span></span>
+                                    <div class="timeline-event">
+                                        <div class="timeline-header mb-1">
+                                            <h6 class="mb-0"></h6>
+                                            <small class="text-muted">@(item.CreatedAt.ToString("dd.MM.yyyy HH:MM"))</small>
+                                        </div>
+                                        <p class="mb-2">@item.Message</p>
+
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+   
+
+        <div class="mt-5">
+            <a class="text-decoration-none text-muted fs-14-px d-flex align-items-center" asp-action="Index"><i class="bx bx-arrow-back"></i>Listeye dön</a>
+        </div>
+
+    </div>
+</div>
