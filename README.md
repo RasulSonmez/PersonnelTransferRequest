@@ -7,7 +7,7 @@
 ## 🧰 Kullanılan Teknolojiler
 
 - ⚙️ **Backend:** ASP.NET Core 8
-- 🎨 **Frontend:** HTML, CSS, JavaScript ve jQuery
+- 🎨 **Frontend:** HTML, CSS, Bootstrap, JavaScript ve jQuery
 - 🗄️ **Veritabanı:** MSSQL Server
 - 🔄 **ORM:** Entity Framework Core 8
 - 🧩 **Diğer:** Identity, Serilog, LINQ, Razor Pages
