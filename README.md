@@ -95,6 +95,6 @@ PersonnelTransferRequest/
 - 📋 **Serilog Loglama**:
   - Personel tarafında action bazlı loglama.
   - Admin tarafı için özel Middleware ile isteklerin loglanması.
-    -14 günde bir logların temizlenmesi.
+  - 14 günde bir logların temizlenmesi.
 
 Not: Proje içerisindeki tüm önemli sınıflara ve metotlara açıklayıcı yorum satırları (summary etiketleri) eklenmiştir. Bu sayede kod okunabilirliği ve geliştirici deneyimi artırılmıştır.
