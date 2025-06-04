@@ -2,6 +2,12 @@
 
 namespace PersonnelTransferRequest.Web.Helper
 {
+    /// <summary>
+    /// Custom implementation of IdentityErrorDescriber to provide Turkish-language 
+    /// error messages for ASP.NET Core Identity operations such as registration,
+    /// login, password requirements, and role management. 
+    /// Enhances user experience by displaying localized and user-friendly error descriptions.
+    /// </summary>
     public class CustomIdentityErrorDescriber : IdentityErrorDescriber
     {
         public override IdentityError DefaultError()

@@ -1,5 +1,12 @@
 ﻿namespace PersonnelTransferRequest.Web.Middleware
 {
+    /// <summary>
+    /// Custom middleware for logging HTTP requests in an ASP.NET Core application.
+    /// Logs the request path, matched route pattern, authenticated username,
+    /// and whether the request completed successfully or threw an exception.
+    /// Designed to enhance auditability and traceability across both admin and personnel actions.
+    /// </summary>
+
     public class LoggingMiddleware
     {
         private readonly RequestDelegate _next;
