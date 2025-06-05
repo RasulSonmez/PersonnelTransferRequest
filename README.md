@@ -77,7 +77,7 @@ PersonnelTransferRequest/
 
 ### 👤 Personel Tarafı
 
-- 🔐 [`/giris-yap`](https://localhost:7299/giris-yap): Sisteme giriş.
+- 🔐 [`/giris-yap`](https://localhost:7299/giris-yap): Sisteme sicil ve şifre ile giriş.
 - 📝 [`/kayit-ol`](https://localhost:7299/kayit-ol): Sicil, isim-soyisim, unvan, TCKN, telefon, görev yeri, e-posta, şifre ve fotoğraf ile kayıt.
 - 🪪 Giriş sonrası kişisel bilgilerin olduğu profil kartı.
 - 📄 **Tayin Taleplerim:** Geçmiş başvurular ve durum bilgileri.
@@ -135,3 +135,14 @@ PersonnelTransferRequest/
 ---
 
 Not: Proje içerisindeki tüm önemli sınıflara ve metotlara açıklayıcı yorum satırları (summary etiketleri) eklenmiştir. Bu sayede kod okunabilirliği ve geliştirici deneyimi artırılmıştır.
+
+- **Örnek giriş bilgileri:**
+  **Admin**
+
+  - admin@example.com
+  - Pa$$w0rd!
+
+    **Personel**
+
+  - 188187
+  - Adalet34.

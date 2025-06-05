@@ -5,7 +5,7 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.ViewModel
     public class AdminRegisterViewModel
     {
         [Required(ErrorMessage = "Email alanı zorunludur.")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "E-posta alanı geçerli bir e-posta adresi değil.")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
