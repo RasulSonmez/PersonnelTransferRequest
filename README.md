@@ -136,13 +136,14 @@ PersonnelTransferRequest/
 
 Not: Proje içerisindeki tüm önemli sınıflara ve metotlara açıklayıcı yorum satırları (summary etiketleri) eklenmiştir. Bu sayede kod okunabilirliği ve geliştirici deneyimi artırılmıştır.
 
-- **Örnek giriş bilgileri:**
-  **Admin**
+## 🔑 Örnek Giriş Bilgileri
 
-  - admin@example.com
-  - Pa$$w0rd!
+### 👤 Yönetici (Admin)
 
-    **Personel**
+- **E-posta:** `admin@example.com`
+- **Şifre:** `Pa$$w0rd!`
 
-  - 188187
-  - Adalet34.
+### 👨‍💼 Personel
+
+- **Sicil No:** `188187`
+- **Şifre:** `Adalet34.`
