@@ -131,6 +131,7 @@ app.MapGet("/admin", async context =>
 
 app.UseRouting();
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

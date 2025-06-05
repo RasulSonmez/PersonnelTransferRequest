@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -607,7 +608,21 @@ namespace PersonnelTransferRequest.Web.Areas.Admin.Controllers
             ModelState.AddModelError(string.Empty, "Geçersiz email adresi veya şifre.");
             return View(model);
         }
-              
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("adminLogout")]
+        public async Task<IActionResult> AdminLogout()
+        {
+            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            Response.Cookies.Delete(".AspNetCore.Identity.Application");
+
+            return Redirect("/adminLogin");
+        }
+
+
         //Action method to admin change user password
         [Authorize(Roles = "Admin")]
         [HttpGet]
